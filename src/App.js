@@ -1,9 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 // 引用组件
-import Home from './views/Home';
-import About from './views/About';
-import News from './views/News';
+import Login from './views/login/Index';
 
 class App extends React.Component {
   constructor(props){
@@ -12,22 +10,11 @@ class App extends React.Component {
   }
   render(){
     return (
-      <div class="test">
-        <h1>adsfasdf</h1>
-        <ul>
-          <li>fadsf</li>
-          <li>fadsf</li>
-          <li>fadsf</li>
-          <li>fadsf</li>
-        </ul>
-        <BrowserRouter>
-          <Switch>
-            <Route exact component={Home} path="/" />
-            <Route component={About} path="/about" />
-            <Route component={News} path="/news" />
-          </Switch>
-        </BrowserRouter>
-      </div>
+      <BrowserRouter>
+        <Switch>
+          <Route exact component={Login} path="/" />
+        </Switch>
+      </BrowserRouter>
     )
   }
 }
