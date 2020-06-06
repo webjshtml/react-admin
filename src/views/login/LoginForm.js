@@ -13,7 +13,8 @@ class LoginForm extends Component{
             username: "",
             code_button_loading: false,
             code_button_disabled: false,
-            code_button_text: "获取验证码"
+            code_button_text: "获取验证码",
+            flag: true
         };
         // react没有数据双向绑定的概念，v-model这个Vue的
     }
@@ -28,13 +29,16 @@ class LoginForm extends Component{
     };
     // 获取验证码
     getCode = () => {
+        // 第一次点击
+        if(!this.state.flag) { return false; }
         if(!this.state.username) {
             message.warning('用户名不能为空！！', 1);
             return false;
         }
         this.setState({
             code_button_loading: true,
-            code_button_text: "发送中"
+            code_button_text: "发送中",
+            flag: false
         })
         const requestData = {
             username: this.state.username,
@@ -48,6 +52,7 @@ class LoginForm extends Component{
                 code_button_loading: false,
                 code_button_text: "重新获取"
             })
+            this.setState({ flag: true })
         })
     }
     /** input输入处理 */
@@ -62,11 +67,9 @@ class LoginForm extends Component{
         // 定时器
         let timer = null;
         // 倒计时时间
-        let sec = 60;
+        let sec = 5;
         // 修改状态
         this.setState({
-            code_button_loading: false,
-            code_button_disabled: true,
             code_button_text: `${sec}S`
         })
         timer = setInterval(() => {
@@ -75,7 +78,7 @@ class LoginForm extends Component{
             if(sec <= 0) {
                 this.setState({
                     code_button_text: `重新获取`,
-                    code_button_disabled: false,
+                    flag: true,
                 })
                 clearInterval(timer);
                 return false;
@@ -95,7 +98,7 @@ class LoginForm extends Component{
     }
 
     render(){
-        const { username, code_button_loading, code_button_text, code_button_disabled } = this.state;
+        const { username,  code_button_text } = this.state;
         return (
             <Fragment>
                 <div className="form-header">
@@ -136,7 +139,8 @@ class LoginForm extends Component{
                                     <Input prefix={<UnlockOutlined className="site-form-item-icon" />} placeholder="Code" />
                                 </Col>
                                 <Col span={9}>
-                                    <Button type="danger" disabled={code_button_disabled} loading={code_button_loading} block onClick={this.getCode}>{code_button_text}</Button>
+                                    <div style={{color: '#fff'}} onClick={this.getCode}>{code_button_text}</div>
+                                    {/* <button type="button" disabled={code_button_disabled} onClick={this.getCode}>{code_button_text}</button> */}
                                 </Col>
                             </Row>
                         </Form.Item>
