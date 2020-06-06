@@ -10,7 +10,11 @@ class Login extends Component{
         this.state = {
             formType: "login"
         };
+        
+    console.log('process.env.REACT_APP_API')
+    console.log(process.env.REACT_APP_API)
     }
+
 
     switchForm = (value) => {
         this.setState({
