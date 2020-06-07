@@ -2,10 +2,14 @@ import React, { Component, Fragment } from "react";
 // ANTD
 import { Form, Input, Button, Row, Col } from 'antd';
 import { UserOutlined, UnlockOutlined } from '@ant-design/icons';
+// 组件
+import Code from "../../components/code/index";
 class RetisterForm extends Component{
     constructor(){
         super();
-        this.state = {};
+        this.state = {
+            username: ""
+        };
     }
 
     onFinish = (values) => {
@@ -16,6 +20,7 @@ class RetisterForm extends Component{
         this.props.switchForm("login");
     }
     render(){
+        const { username } = this.state;
         return (
             <Fragment>
                 <div className="form-header">
@@ -44,7 +49,7 @@ class RetisterForm extends Component{
                                     <Input prefix={<UnlockOutlined className="site-form-item-icon" />} placeholder="Code" />
                                 </Col>
                                 <Col span={9}>
-                                    <Button type="danger" block>获取验证码</Button>
+                                    <Code username={username} />
                                 </Col>
                             </Row>
                         </Form.Item>
