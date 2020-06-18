@@ -15,7 +15,8 @@ class Code extends Component {
             username: props.username,
             button_text: "获取验证码",
             button_loading: false,
-            button_disabled: false
+            button_disabled: false,
+            module: props.module
         }
     }
     // this.props.username 每次都会去获取
@@ -47,9 +48,10 @@ class Code extends Component {
         })
         const requestData = {
             username,
-            module: "login"
+            module: this.state.module
         }
         GetCode(requestData).then(response => {
+            message.success(response.data.message);
             // 执行倒计时
             this.countDown();
         }).catch(error => {

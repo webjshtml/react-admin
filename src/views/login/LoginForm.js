@@ -8,40 +8,66 @@ import { validate_password } from "../../utils/validate";
 import { Login } from "../../api/account";
 // 组件
 import Code from "../../components/code/index";
+// 加密
+import CryptoJs from 'crypto-js';
 class LoginForm extends Component{
     constructor(){
         super();
         this.state = {
             username: "",
-            code_button_loading: false,
-            code_button_disabled: false,
-            code_button_text: "获取验证码"
+            password: "",
+            code: "",
+            module: "login",
+            loading: false
         };
     }
     // 登录
     onFinish = (values) => {
-        Login().then(response => {  // resolves
+        const requestData = {
+            username: this.state.username,
+            code: this.state.code,
+            password: CryptoJs.MD5(this.state.password).toString(),
+        }
+        this.setState({
+            loading: true
+        })
+        Login(requestData).then(response => {  // resolves
             console.log(response)
+            this.setState({
+                loading: false
+            })
         }).catch(error => {  // reject
-
+            this.setState({
+                loading: false
+            })
         })
         console.log('Received values of form: ', values);
     };
     /** input输入处理 */
-    inputChange = (e) => {
+    inputChangeUsername = (e) => {
         let value = e.target.value;
         this.setState({
             username: value
         })
     }
-    
+    inputChangePassword = (e) => {
+        let value = e.target.value;
+        this.setState({
+            password: value
+        })
+    }
+    inputChangeCode = (e) => {
+        let value = e.target.value;
+        this.setState({
+            code: value
+        })
+    }
     toggleForm = () => {
         // 调父级的方法
         this.props.switchForm("register");
     }
-
     render(){
-        const { username } = this.state;
+        const { username, module, loading } = this.state;
         return (
             <Fragment>
                 <div className="form-header">
@@ -61,7 +87,7 @@ class LoginForm extends Component{
                                 { type: "email", message: "邮箱格式不正确"}
                             ]
                         }>
-                            <Input value={username} onChange={this.inputChange} prefix={<UserOutlined className="site-form-item-icon" />} placeholder="email" />
+                            <Input value={username} onChange={this.inputChangeUsername} prefix={<UserOutlined className="site-form-item-icon" />} placeholder="email" />
                         </Form.Item>
                         <Form.Item name="password" rules={
                             [
@@ -69,7 +95,7 @@ class LoginForm extends Component{
                                 { pattern: validate_password, message: "请输入大于6位小于20位数字+字母" },
                             ]
                         }>
-                            <Input prefix={<UnlockOutlined className="site-form-item-icon" />} placeholder="Password" />
+                            <Input type="password" onChange={this.inputChangePassword} prefix={<UnlockOutlined className="site-form-item-icon" />} placeholder="Password" />
                         </Form.Item>
                         <Form.Item name="code" rules={
                             [
@@ -79,15 +105,15 @@ class LoginForm extends Component{
                         } >
                             <Row gutter={13}>
                                 <Col span={15}>
-                                    <Input prefix={<UnlockOutlined className="site-form-item-icon" />} placeholder="Code" />
+                                    <Input onChange={this.inputChangeCode} prefix={<UnlockOutlined className="site-form-item-icon" />} placeholder="Code" />
                                 </Col>
                                 <Col span={9}>
-                                    <Code username={username} />
+                                    <Code username={username} module={module} />
                                 </Col>
                             </Row>
                         </Form.Item>
                         <Form.Item>
-                            <Button type="primary" htmlType="submit" className="login-form-button" block> 登录 </Button>
+                            <Button type="primary" loading={loading} htmlType="submit" className="login-form-button" block> 登录 </Button>
                         </Form.Item>
                     </Form>
                 </div>
