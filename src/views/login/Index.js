@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+
 // css
 import "./index.scss";
 // 组件
@@ -10,9 +11,6 @@ class Login extends Component{
         this.state = {
             formType: "login"
         };
-        
-    console.log('process.env.REACT_APP_API')
-    console.log(process.env.REACT_APP_API)
     }
 
 
