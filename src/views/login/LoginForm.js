@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from "react";
+import { withRouter } from 'react-router-dom';
 // ANTD
 import { Form, Input, Button, Row, Col } from 'antd';
 import { UserOutlined, UnlockOutlined  } from '@ant-design/icons';
@@ -32,10 +33,11 @@ class LoginForm extends Component{
             loading: true
         })
         Login(requestData).then(response => {  // resolves
-            console.log(response)
             this.setState({
                 loading: false
             })
+            // 路由跳转
+            this.props.history.push('/index');
         }).catch(error => {  // reject
             this.setState({
                 loading: false
@@ -122,4 +124,4 @@ class LoginForm extends Component{
     }
 }
 
-export default LoginForm;
+export default withRouter(LoginForm);

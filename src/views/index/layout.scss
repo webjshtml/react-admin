@@ -1,0 +1,13 @@
+.layout-wrap { height: 100vh; }
+.layout-header {
+    position: relative;
+    z-index: 2;
+    height: 75px;
+    background-color: #fff;
+    @include webkit(box-shadow, 0 3px 16px 0 rgba(0, 0, 0, .1));
+}
+.layout-main {
+    border: 30px solid #f7f7f7;
+    background-color: #fff;
+    padding: 30px;
+}

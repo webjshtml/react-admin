@@ -95,7 +95,7 @@ class RetisterForm extends Component{
                                 }   
                             })
                         ]} >
-                            <Input onChange={this.inputChangePassword} prefix={<UnlockOutlined className="site-form-item-icon" />} placeholder="请输入密码" />
+                            <Input type="password" onChange={this.inputChangePassword} prefix={<UnlockOutlined className="site-form-item-icon" />} placeholder="请输入密码" />
                         </Form.Item>
                         <Form.Item name="passwords" rules={[
                             { required: true, message: "再次确认密码不能为空！！" },
@@ -108,7 +108,7 @@ class RetisterForm extends Component{
                                 }   
                             })
                         ]} >
-                            <Input prefix={<UnlockOutlined className="site-form-item-icon" />} placeholder="请再次输入密码" />
+                            <Input type="password" prefix={<UnlockOutlined className="site-form-item-icon" />} placeholder="请再次输入密码" />
                         </Form.Item>
                         <Form.Item name="code" rules={[
                             { required: true, message: "请输入长度为6位的字符", len: 6 }
