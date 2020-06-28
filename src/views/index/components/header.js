@@ -6,11 +6,10 @@ class Index extends Component {
         super(props);
         this.state = {};
     }
-
     render(){
         return (
             <Fragment>
-                <h1 class="logo"><span>LOGO</span></h1>
+                <h1 className="logo"><span>LOGO</span></h1>
             </Fragment>
         )
     }
