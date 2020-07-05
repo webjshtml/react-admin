@@ -1,7 +1,7 @@
 const router = [
     {
       title: '控制台',
-      icon: 'index',
+      icon: 'laptop',
       key: '/index'
     },
     {
@@ -14,7 +14,7 @@ const router = [
           key: '/index/user/add', 
           title: '添加用户', 
           icon: ''
-        },
+        }
       ]
     },
     {

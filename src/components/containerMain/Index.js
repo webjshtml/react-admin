@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { Switch } from 'react-router-dom';
 // 组件
 import User from "../../views/user/Index";
 import UserAdd from "../../views/user/Add";
