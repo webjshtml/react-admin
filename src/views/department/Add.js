@@ -1,18 +1,13 @@
 import React, { Component } from "react";
-// asideMenu
-import AsideMenu from "../../../components/asideMneu/Index";
-
-class Aside extends Component {
+class DepartmentAdd extends Component {
     constructor(props){
         super(props);
         this.state = {};
     }
-
     render(){
         return (
-            <AsideMenu  />
+            <div>部门新增</div>
         )
     }
 }
-
-export default Aside;
+export default DepartmentAdd;

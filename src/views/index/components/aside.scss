@@ -1,15 +1,42 @@
 .logo {
+    float: left;
     width: 250px;
-    display: flex;
     height: 75px;
     margin-left: -50px;
     align-items: center;
     justify-content: center;
     background-color: #001529;
+    -webkit-transition: all .2s ease 0s;
+    -moz-transition: all .2s ease 0s;
+    -ms-transition: all .2s ease 0s;
+    -o-transition: all .2s ease 0s;
+    transition: all .2s ease 0s;
     span {
         display: block;
         width: 177px;
         height: 47px;
         background-color: #1a2d3f;
     }
+}
+.collapsed-close {
+    
+    .logo { 
+        width: 80px; 
+        span { width: 100%; }
+    }
+    .header-wrap {
+        margin-left: 65px;
+    }
+}
+.header-wrap {
+    margin-left: 220px;
+    -webkit-transition: all .2s ease 0s;
+    -moz-transition: all .2s ease 0s;
+    -ms-transition: all .2s ease 0s;
+    -o-transition: all .2s ease 0s;
+    transition: all .2s ease 0s;
+}
+.collapsed-icon {
+    font-size: 24px;
+    cursor: pointer;
 }

@@ -1,18 +1,13 @@
 import React, { Component } from "react";
-// asideMenu
-import AsideMenu from "../../../components/asideMneu/Index";
-
-class Aside extends Component {
+class UserList extends Component {
     constructor(props){
         super(props);
         this.state = {};
     }
-
     render(){
         return (
-            <AsideMenu  />
+            <div>用户列表</div>
         )
     }
 }
-
-export default Aside;
+export default UserList;
