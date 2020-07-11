@@ -37,7 +37,6 @@ class AsideMenu extends Component {
         this.selectMenuHigh(menuHigh);
     }
     openMenu = (openKeys) => {
-        console.log(openKeys)
         this.setState({
             openKeys: [openKeys[openKeys.length - 1]]
         })

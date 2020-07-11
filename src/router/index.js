@@ -20,10 +20,10 @@ const router = [
     {
       title: '部门管理',
       icon: 'bars',
-      key: '/home/navigation',
+      key: '/index/department',
       child: [
-        {key: '/home/navigation/dropdown', title: '部门列表', icon: ''},
-        {key: '/home/navigation/menu', title: '添加部门', icon: ''},
+        {key: '/index/department/list', title: '部门列表', icon: ''},
+        {key: '/index/department/add', title: '添加部门', icon: ''},
       ]
     },
     {

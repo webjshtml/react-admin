@@ -1,13 +1,13 @@
 import React, { Component } from "react";
-class UserAdd extends Component {
+class DepartmentAdd extends Component {
     constructor(props){
         super(props);
         this.state = {};
     }
     render(){
         return (
-            <div>用户添加</div>
+            <div>部门新增</div>
         )
     }
 }
-export default UserAdd;
+export default DepartmentAdd;
