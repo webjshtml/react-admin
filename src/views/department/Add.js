@@ -40,10 +40,11 @@ class DepartmentAdd extends Component {
             // 重置表单
             this.refs.form.resetFields();
         }).catch(error => {
-            this.setState({
-                loading: false
-            })
+            console.log('errorerrorerrorerrorerror')
+            console.log(error)
         })
+
+       
     }
     render(){
         return (
