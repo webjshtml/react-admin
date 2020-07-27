@@ -37,7 +37,7 @@ service.interceptors.response.use(function (response) {  // http状态为200
         return response;
     }
 }, function (error) {  // http 状态不为200
-    const data = error.request;
+    // const data = error.request;
     // 对响应错误做点什么
     return Promise.reject(error.request);
 });

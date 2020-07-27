@@ -4,4 +4,7 @@
 body { 
     background-color: #001529 !important; // 权重最高
 }
-  
+.inline-button {
+    button + button { margin-left: 10px; }
+}
+.table-wrap { padding-top: 30px; }
