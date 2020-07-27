@@ -1,8 +1,10 @@
 import React, { Component, Fragment } from "react";
+// 
+import { Link } from "react-router-dom";
 // antd
-import { Form, Input, Button, Table, Switch, message } from "antd";
+import { Form, Input, Button, Table, Switch, message, Modal } from "antd";
 // api
-import { GetList, Delete } from "@api/department";
+import { GetList, Delete, Status } from "@api/department";
 class DepartmentList extends Component {
     constructor(props){
         super(props);
@@ -13,6 +15,12 @@ class DepartmentList extends Component {
             keyWork: "",
             // 复选框数据
             selectedRowKeys: [],
+            // 警告弹窗
+            visible: false,
+            // 弹窗确定按钮 loading
+            confirmLoading: false,
+            // id
+            id: "",
             // 表头
             columns: [
                 { title: "部门名称", dataIndex: "name", key: "name" },
@@ -21,7 +29,7 @@ class DepartmentList extends Component {
                     dataIndex: "status", 
                     key: "status",
                     render: (text, rowData) => {
-                        return <Switch checkedChildren="启用" unCheckedChildren="禁用" defaultChecked={rowData.status === "1" ? true : false} />
+                        return <Switch onChange={() => this.onHandlerSwitch(rowData)} checkedChildren="启用" unCheckedChildren="禁用" defaultChecked={rowData.status === "1" ? true : false} />
                     }
                 },
                 { title: "人员数量", dataIndex: "number", key: "number" },
@@ -33,7 +41,9 @@ class DepartmentList extends Component {
                     render: (text, rowData) => {
                         return (
                             <div className="inline-button">
-                                <Button type="primary">编辑</Button>
+                                <Button type="primary">
+                                    <Link to={{ pathname: '/index/department/add', state:{ id: rowData.id}}}>编辑</Link>
+                                </Button>
                                 <Button onClick={() => this.onHandlerDelete(rowData.id)}>删除</Button>
                             </div>
                         )
@@ -76,17 +86,42 @@ class DepartmentList extends Component {
         this.loadDada();
     }
     /** 删除 */
-    onHandlerDelete = (id) => {
+    onHandlerDelete(id){
         if(!id) { return false; }
-        Delete({id}).then(response => {
+        this.setState({
+            visible: true,
+            id
+        })
+    }
+    /** 禁启用 */
+    onHandlerSwitch(data){
+        if(!data.status) { return false; }
+        const requestData = {
+            id: data.id,
+            status: data.status === "1" ? false : true
+        }
+        Status(requestData).then(response => {
             message.info(response.data.message);
-            // 请求数据
-            this.loadDada();
         })
     }
     /** 复选框 */
     onCheckebox = (selectedRowKeys) => {
         this.setState({ selectedRowKeys })
+    }
+    /** 弹窗 */
+    modalThen = () => {
+        this.setState({
+            confirmLoading: true
+        })
+        Delete({id: this.state.id}).then(response => {
+            message.info(response.data.message);
+            this.setState({
+                visible: false,
+                id: "",
+                confirmLoading: false
+            })
+            this.loadDada();
+        })
     }
     render(){
         const { columns, data } = this.state;
@@ -106,6 +141,17 @@ class DepartmentList extends Component {
                 <div className="table-wrap">
                     <Table rowSelection={rowSelection} rowKey="id" columns={columns} dataSource={data} bordered></Table>
                 </div>
+                <Modal
+                    title="提示"
+                    visible={this.state.visible}
+                    onOk={this.modalThen}
+                    onCancel={() => { this.setState({ visible: false})}}
+                    okText="确认"
+                    cancelText="取消"
+                    confirmLoading={this.state.confirmLoading}
+                >
+                    <p className="text-center">确定删除此信息？<strong className="color-red">删除后将无法恢复。</strong></p>
+                </Modal>
             </Fragment>
         )
     }
