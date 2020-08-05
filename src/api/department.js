@@ -16,7 +16,7 @@ export function DepartmentAddApi(data){
  */
 export function GetList(data){
     return service.request({
-        url: "/department/list/",
+        url: data.url,
         method: "post",
         data,
     })
