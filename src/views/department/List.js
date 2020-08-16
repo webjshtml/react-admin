@@ -2,9 +2,9 @@ import React, { Component, Fragment } from "react";
 // 
 import { Link } from "react-router-dom";
 // antd
-import { Form, Input, Button, Switch, message, Modal } from "antd";
+import { Button, Switch, message } from "antd";
 // api
-import { Delete, Status } from "@api/department";
+import { Status } from "@api/department";
 // table 组件
 import TableComponent from "@c/tableData/Index";
 class DepartmentList extends Component {
@@ -23,15 +23,21 @@ class DepartmentList extends Component {
             tableConfig: {
                 url: "departmentList",
                 checkbox: true,
-                rowkey: "id",
                 thead: [
-                    { title: "部门名称", dataIndex: "name", key: "name" },
+                    { 
+                        title: "部门名称", 
+                        dataIndex: "name", 
+                        key: "name",
+                        render: (name, rowData) => {
+                            return <a href={rowData.id}>{name}</a>
+                        }
+                    },
                     { 
                         title: "禁启用", 
                         dataIndex: "status", 
                         key: "status",
-                        render: (text, rowData) => {
-                            return <Switch onChange={() => this.onHandlerSwitch(rowData)} loading={rowData.id == this.state.id} checkedChildren="启用" unCheckedChildren="禁用" defaultChecked={rowData.status === "1" ? true : false} />
+                        render: (status, rowData) => {
+                            return <Switch onChange={() => this.onHandlerSwitch(rowData)} loading={rowData.id === this.state.id} checkedChildren="启用" unCheckedChildren="禁用" defaultChecked={status === "1" ? true : false} />
                         }
                     },
                     { title: "人员数量", dataIndex: "number", key: "number" },
@@ -68,15 +74,7 @@ class DepartmentList extends Component {
     getChildRef = (ref) => {
         this.tableComponent = ref; // 存储子组件
     }
-    /** 搜索 */
-    onFinish = (value) => {
-        if(this.state.loadingTable) { return false }
-        this.setState({
-            keyWork: value.name,
-            pageNumber: 1,
-            pageSize: 10,
-        })
-    }
+    
     /** 禁启用 */
     onHandlerSwitch(data){
         if(!data.status) { return false; }
@@ -105,17 +103,7 @@ class DepartmentList extends Component {
     render(){
         return (
             <Fragment>
-                <Form layout="inline" onFinish={this.onFinish}>
-                    <Form.Item label="部门名称" name="name">
-                        <Input placeholder="请输入部门名称" />
-                    </Form.Item>
-                    <Form.Item shouldUpdate={true}>
-                        <Button type="primary" htmlType="submit">搜索</Button>
-                    </Form.Item>
-                </Form>
-                <div className="table-wrap">
-                    <TableComponent onRef={this.getChildRef} batchButton={true} config={this.state.tableConfig} />
-                </div>
+                <TableComponent onRef={this.getChildRef} batchButton={true} config={this.state.tableConfig} />
             </Fragment>
         )
     }

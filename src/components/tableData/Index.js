@@ -2,14 +2,14 @@ import React, { Component, Fragment } from "react";
 // propTypes
 import PropTypes from 'prop-types';
 // antd
-import { Table, Pagination, Row, Col, Button, message, Modal } from "antd";
+import { message, Modal, Form, Input, Button } from "antd";
 // api
 import { TableList, TableDelete } from "@api/common";
-import { Delete } from "@api/department";
 // url
 import requestUrl from "@api/requestUrl";
+// Table basis component
+import TableBasis from "./Table";
 class TableComponent extends Component {
-
     constructor(props){
         super(props);
         this.state = {
@@ -39,14 +39,16 @@ class TableComponent extends Component {
 
     /** 获取列表数据 */
     loadDada = () => {
-        const { pageNumber, pageSize } = this.state;
+        const { pageNumber, pageSize, keyWork } = this.state;
         const requestData = {
             url: requestUrl[this.props.config.url],
             data: {
                 pageNumber: pageNumber,
-                pageSize: pageSize,
+                pageSize: pageSize
             }
         }
+        // 拼接搜索参数
+        if(keyWork) { requestData.data.name = keyWork; }
         TableList(requestData).then(response => {
             const responseData = response.data.data; // 数据
             if(responseData.data) {  // 返回一个 null
@@ -86,6 +88,16 @@ class TableComponent extends Component {
             this.loadDada();
         })
     }
+    /** 搜索 */
+    onFinish = (value) => {
+        console.log(value)
+        this.setState({
+            keyWork: value.name,
+            pageNumber: 1,
+            pageSize: 10,
+        })
+        this.loadDada();
+    }
     /** 确认弹窗 */
     modalThen = () => {
         // 判断是否已选择删除的数据
@@ -122,25 +134,28 @@ class TableComponent extends Component {
         }
         return (
             <Fragment>
-                {/* table 组件 */}
-                <Table pagination={false} loading={loadingTable} rowKey={rowkey || "id"} rowSelection={checkbox ? rowSelection : null} columns={thead} dataSource={this.state.data} bordered />
-                <div className="spacing-30"></div>
-                <Row>
-                    <Col span={8}>
-                        { this.props.batchButton && <Button onClick={() => this.onHandlerDelete()}>批量删除</Button> }
-                    </Col>
-                    <Col span={16}>
-                        <Pagination
-                            onChange={this.onChangeCurrnePage}
-                            onShowSizeChange={this.onChangeSizePage}
-                            className="pull-right"
-                            total={this.state.total}
-                            showSizeChanger
-                            showQuickJumper
-                            showTotal={total => `Total ${total} items`}
-                        />
-                    </Col>
-                </Row>
+                {/* 筛选 */}
+                <Form layout="inline" onFinish={this.onFinish}>
+                    <Form.Item label="部门名称" name="name">
+                        <Input placeholder="请输入部门名称" />
+                    </Form.Item>
+                    <Form.Item shouldUpdate={true}>
+                        <Button type="primary" htmlType="submit">搜索</Button>
+                    </Form.Item>
+                </Form>
+                {/* table UI 组件 */}
+                <div className="table-wrap">
+                    <TableBasis 
+                        columns={thead} 
+                        dataSource={this.state.data} 
+                        total={this.state.total} 
+                        changePageCurrent={this.onChangeCurrnePage}
+                        changePageSize={this.onChangeSizePage}
+                        handlerDelete={() => this.onHandlerDelete()}
+                        rowSelection={checkbox ? rowSelection : null}
+                        rowkey={rowkey}
+                    />
+                </div>
                 {/* 确认弹窗 */}
                 <Modal
                     title="提示"
