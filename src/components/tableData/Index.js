@@ -127,7 +127,6 @@ class TableComponent extends Component {
         })
     }
     render(){
-        const { loadingTable } = this.state;
         const { thead, checkbox, rowkey } = this.props.config;
         const rowSelection = {
             onChange: this.onCheckebox
