@@ -1,8 +1,10 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 // antd
 import { Form, Input, InputNumber, Button, Radio, message } from "antd";
 // API
 import { DepartmentAddApi, Detailed, Edit } from "@/api/department";
+// 组件
+import FormCom from "@c/form/Index";
 class DepartmentAdd extends Component {
     constructor(props){
         super(props);
@@ -12,7 +14,11 @@ class DepartmentAdd extends Component {
             formLayout: {
                 labelCol: { span: 2 },
                 wrapperCol: { span: 20 }
-            }
+            },
+            formItem: [
+                { type: "Input",  label: "部门名称", name: "name", required: true },
+                { type: "Select",  label: "部门aaaa名称", name: "namea", required: true },
+            ]
         };
     }
 
@@ -88,27 +94,47 @@ class DepartmentAdd extends Component {
     }
     render(){
         return (
-          <Form ref="form" onFinish={this.onSubmit} initialValues={{ status: true, number: 0}} {...this.state.formLayout}>
-              <Form.Item label="部门名称" name="name">
-                  <Input />
-              </Form.Item>
-              <Form.Item label="人员数量" name="number">
-                  <InputNumber min={0} max={100} />
-              </Form.Item>
-              <Form.Item label="禁启用" name="status">
-                <Radio.Group>
-                    <Radio value={false}>禁用</Radio>
-                    <Radio value={true}>启用</Radio>
-                </Radio.Group>
-              </Form.Item>
-              <Form.Item label="描述" name="content">
-                  <Input.TextArea />
-              </Form.Item>
-              <Form.Item>
-                  <Button loading={this.state.loading} type="primary" htmlType="submit">确定</Button>
-              </Form.Item>
-          </Form>
+            <Fragment>
+                <FormCom formItem={this.state.formItem} />
+                <Form ref="form" onFinish={this.onSubmit} initialValues={{ status: true, number: 0}} {...this.state.formLayout}>
+                    <Form.Item label="部门名称" name="name" rules={[
+                                    {
+                                        required:true,
+                                        message:'用户名不能为空'
+                                    },
+                                    {
+                                        min:5,max:10,
+                                        message:'长度不在范围内'
+                                    },
+                                    {
+                                        pattern:new RegExp('^\\w+$','g'),
+                                        message:'用户名必须为字母或者数字'
+                                    }
+                                ]}>
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item label="人员数量" name="number">
+                        <InputNumber min={0} max={100} />
+                    </Form.Item>
+
+                    <Form.Item label="禁启用" name="status">
+                        <Radio.Group>
+                            <Radio value={false}>禁用</Radio>
+                            <Radio value={true}>启用</Radio>
+                        </Radio.Group>
+                    </Form.Item>
+
+                    <Form.Item label="描述" name="content">
+                        <Input.TextArea />
+                    </Form.Item>
+                    <Form.Item>
+                        <Button loading={this.state.loading} type="primary" htmlType="submit">确定</Button>
+                    </Form.Item>
+                </Form>
+          </Fragment>
         )
     }
 }
+// export default Form.create()(DepartmentAdd);
 export default DepartmentAdd;
