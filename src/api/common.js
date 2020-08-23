@@ -20,3 +20,14 @@ export function TableDelete(params){
         data: params.data
     })
 }
+
+/**
+ * 公用API
+ */
+export function requestData(params){
+    return service.request({
+        url: params.url,
+        method: params.method || "post",
+        data: params.data
+    })
+}
