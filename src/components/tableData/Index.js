@@ -2,13 +2,14 @@ import React, { Component, Fragment } from "react";
 // propTypes
 import PropTypes from 'prop-types';
 // antd
-import { message, Modal, Form, Input, Button } from "antd";
+import { message, Modal } from "antd";
 // api
 import { TableList, TableDelete } from "@api/common";
 // url
 import requestUrl from "@api/requestUrl";
 // Table basis component
 import TableBasis from "./Table";
+import FormSearch from "../formSearch/Index";
 class TableComponent extends Component {
     constructor(props){
         super(props);
@@ -16,7 +17,7 @@ class TableComponent extends Component {
             // 请求参数
             pageNumber: 1,
             pageSize: 10,
-            keyWork: "",
+            searchData: {},
             // 数据
             data: [],
             // 加载提示
@@ -39,7 +40,7 @@ class TableComponent extends Component {
 
     /** 获取列表数据 */
     loadDada = () => {
-        const { pageNumber, pageSize, keyWork } = this.state;
+        const { pageNumber, pageSize, searchData } = this.state;
         const requestData = {
             url: requestUrl[this.props.config.url],
             data: {
@@ -47,8 +48,13 @@ class TableComponent extends Component {
                 pageSize: pageSize
             }
         }
-        // 拼接搜索参数
-        if(keyWork) { requestData.data.name = keyWork; }
+        // 筛选项的参数拼接
+        if(Object.keys(searchData).length !== 0) {
+            for(let key in searchData) {
+                requestData.data[key] = searchData[key]
+            }
+        }
+        // 请求接口
         TableList(requestData).then(response => {
             const responseData = response.data.data; // 数据
             if(responseData.data) {  // 返回一个 null
@@ -60,6 +66,15 @@ class TableComponent extends Component {
             this.setState({loadingTable: false})
         }).catch(error => {
             this.setState({loadingTable: false})
+        })
+    }
+    search = (searchData) => {
+        this.setState({
+            pageNumber: 1,
+            pageSize: 10,
+            searchData
+        }, () => {
+            this.loadDada();
         })
     }
     /** 删除 */
@@ -87,16 +102,6 @@ class TableComponent extends Component {
         }, () => {
             this.loadDada();
         })
-    }
-    /** 搜索 */
-    onFinish = (value) => {
-        console.log(value)
-        this.setState({
-            keyWork: value.name,
-            pageNumber: 1,
-            pageSize: 10,
-        })
-        this.loadDada();
     }
     /** 确认弹窗 */
     modalThen = () => {
@@ -127,21 +132,14 @@ class TableComponent extends Component {
         })
     }
     render(){
-        const { thead, checkbox, rowkey } = this.props.config;
+        const { thead, checkbox, rowkey, formItem } = this.props.config;
         const rowSelection = {
             onChange: this.onCheckebox
         }
         return (
             <Fragment>
                 {/* 筛选 */}
-                <Form layout="inline" onFinish={this.onFinish}>
-                    <Form.Item label="部门名称" name="name">
-                        <Input placeholder="请输入部门名称" />
-                    </Form.Item>
-                    <Form.Item shouldUpdate={true}>
-                        <Button type="primary" htmlType="submit">搜索</Button>
-                    </Form.Item>
-                </Form>
+                <FormSearch formItem={formItem} search={this.search} />
                 {/* table UI 组件 */}
                 <div className="table-wrap">
                     <TableBasis 
