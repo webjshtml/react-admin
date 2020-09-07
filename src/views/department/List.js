@@ -7,6 +7,10 @@ import { Button, Switch, message } from "antd";
 import { Status } from "@api/department";
 // table 组件
 import TableComponent from "@c/tableData/Index";
+// Store
+import Store from "@/stroe/Index";
+// action
+import { addStatus, uploadStatus } from "@/stroe/action/Config";
 class DepartmentList extends Component {
     constructor(props){
         super(props);
@@ -85,7 +89,18 @@ class DepartmentList extends Component {
         };
     }
     /** 生命周期挂载完成 */
-    componentDidMount(){}
+    componentDidMount(){
+        Store.subscribe(() =>
+            console.log(Store.getState())
+        );
+
+        Store.dispatch(addStatus({
+            label: "所有",
+            value: "all"
+        }))
+
+        // Store.dispatch(uploadStatus("aaaaa", false))
+    }
     // 获取子组件实例
     getChildRef = (ref) => {
         this.tableComponent = ref; // 存储子组件

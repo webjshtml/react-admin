@@ -6,7 +6,6 @@ import { Form, Input, Button, Select, InputNumber, Radio } from "antd";
 // store
 import Store from "@/stroe/Index";
 const { Option } = Select;
-
 class FormSearch extends Component {
 
     constructor(props){

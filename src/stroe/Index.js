@@ -9,6 +9,6 @@ const allReducer = { department, job, config }
 const rootReducer = combineReducers(allReducer);
 
 // 创建 Store 实例
-const store = createStore(rootReducer);
+const store = createStore(rootReducer);  // 注入
 
 export default store;
