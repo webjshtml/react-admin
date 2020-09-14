@@ -3,17 +3,14 @@ import React, { Component, Fragment } from "react";
 import PropTypes from 'prop-types';
 // antd
 import{ Table, Row, Col, Button, Pagination } from "antd";
-// connect
-import { connect } from "react-redux";
 class TableBasis extends Component {
     render(){
-        const { thead } = this.props.config;
+        const { columns, dataSource, total, changePageCurrent, changePageSize, batchButton, handlerDelete, rowSelection, rowkey } = this.props;
         return (
             <Fragment>
+                <Table pagination={false} rowKey={rowkey} rowSelection={rowSelection} columns={columns} dataSource={dataSource} bordered />
                 <div className="spacing-30"></div>
-                <div>111{this.props.list}</div>
-                <Table columns={thead} dataSource={this.props.list} bordered />
-                {/* <Row>
+                <Row>
                     <Col span={8}>
                         { batchButton && <Button onClick={handlerDelete}>批量删除</Button> }
                     </Col>
@@ -28,29 +25,28 @@ class TableBasis extends Component {
                             showTotal={total => `Total ${total} items`}
                         />
                     </Col>
-                </Row> */}
+                </Row>
             </Fragment>
         )
     }
 }
 // 校验数据类型
 TableBasis.propTypes = {
-    config: PropTypes.object
+    columns: PropTypes.array,
+    dataSource: PropTypes.array,
+    total: PropTypes.number,
+    changePageCurrent: PropTypes.func,
+    changePageSize: PropTypes.func,
+    batchButton: PropTypes.bool,
+    rowSelection: PropTypes.object,
+    rowkey: PropTypes.string
 }
 // 默认
 TableBasis.defaultProps = {
-    config: {}
+    column: [],
+    dataSource: [],
+    total: 0,
+    batchButton: true,
+    rowkey: "id"
 }
-
-//把store中的数据映射到这个组件变成props
-const mapStateToProps = (state)=> {
-    console.log(state.departmentList)
-    return {
-      list: state.departmentList
-    }
-  }
-
-export default connect(
-    mapStateToProps,
-    null
-)(TableBasis);
+export default TableBasis;
