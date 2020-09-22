@@ -11,8 +11,7 @@ class TableBasis extends Component {
         return (
             <Fragment>
                 <div className="spacing-30"></div>
-                <div>111{this.props.list}</div>
-                <Table columns={thead} dataSource={this.props.list} bordered />
+                <Table rowKey={this.props.rowKey} columns={thead} dataSource={this.props.list} bordered />
                 {/* <Row>
                     <Col span={8}>
                         { batchButton && <Button onClick={handlerDelete}>批量删除</Button> }
@@ -35,18 +34,19 @@ class TableBasis extends Component {
 }
 // 校验数据类型
 TableBasis.propTypes = {
-    config: PropTypes.object
+    config: PropTypes.object,
+    rowKey: PropTypes.string
 }
 // 默认
 TableBasis.defaultProps = {
-    config: {}
+    config: {},
+    rowKey: "id"
 }
 
 //把store中的数据映射到这个组件变成props
-const mapStateToProps = (state)=> {
-    console.log(state.departmentList)
+const mapStateToProps = (state)=> {  // mapState 会将数据映射成 this.props.list
     return {
-      list: state.departmentList
+      list: state.department.departmentList
     }
   }
 

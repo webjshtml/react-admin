@@ -1,8 +1,18 @@
+import { addDepartmentListData } from "../Type";
 const stateData = {
-    aa: "aaaaaa"
+    departmentList: []
 }
 
 const departmentReducer = function(state = stateData, action) {
-    return state;
+    switch(action.type){
+        case addDepartmentListData: {
+            return {
+                ...state,
+                departmentList: action.data
+            }
+        }
+        default:
+            return state;
+    }
 }
 export default departmentReducer;

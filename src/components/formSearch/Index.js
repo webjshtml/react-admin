@@ -5,6 +5,9 @@ import PropTypes from 'prop-types';
 import { Form, Input, Button, Select, InputNumber, Radio } from "antd";
 // connect
 import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+// action
+import { addDepartmentList, updateDepartmentList } from "@/stroe/action/Department"
 // url
 import requestUrl from "@api/requestUrl";
 // api
@@ -115,6 +118,28 @@ class FormSearch extends Component {
         return formList;
     }
 
+    search = (params) => {
+        const requestData = {
+            url: requestUrl[params.url],
+            data: {
+                pageNumber: 1,
+                pageSize: 10
+            }
+        }
+        // 筛选项的参数拼接
+        if(Object.keys(params.searchData).length !== 0) {
+            for(let key in params.searchData) {
+                requestData.data[key] = params.searchData[key]
+            }
+        }
+        // 请求接口
+        TableList(requestData).then(response => {
+            const responseData = response.data.data; // 数据
+            this.props.actions.addDate(responseData)
+        }).catch(error => {
+        })
+    }
+
     onSubmit = (value) => {  // 添加、修改
         const searchData = {};
         for(let key in value) {
@@ -122,7 +147,7 @@ class FormSearch extends Component {
                 searchData[key] = value[key]
             }
         }
-        this.props.search({
+        this.search({
             url: "departmentList",
             searchData
         })
@@ -155,31 +180,13 @@ const mapStateToProps = (state) => ({
 })
 const mapDispatchToProps = (dispatch) => {
     return {
-        search: (params) => {
-            const requestData = {
-                url: requestUrl[params.url],
-                data: {
-                    pageNumber: 1,
-                    pageSize: 10
-                }
-            }
-            // 筛选项的参数拼接
-            if(Object.keys(params.searchData).length !== 0) {
-                for(let key in params.searchData) {
-                    requestData.data[key] = params.searchData[key]
-                }
-            }
-            // 请求接口
-            TableList(requestData).then(response => {
-                const responseData = response.data.data; // 数据
-                dispatch({
-                    type: "GET_DEPARTMENT_LIST",
-                    payload: { data: responseData.data }
-                })
-            }).catch(error => {
-            })
-            
-        }
+        // addDate: bindActionCreators(addDepartmentList, dispatch)  // 单个action做处理
+        // updateDate: bindActionCreators(updateDepartmentList, dispatch)  // 单个action做处理
+        actions: bindActionCreators({
+            addDate: addDepartmentList,
+            updateDate: updateDepartmentList
+        }, dispatch)
+
     }
 }
 

@@ -45,6 +45,7 @@ class DepartmentList extends Component {
             tableConfig: {
                 url: "departmentList",
                 checkbox: true,
+                rowKey: "id",
                 thead: [
                     { 
                         title: "部门名称", 
