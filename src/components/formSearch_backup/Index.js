@@ -3,8 +3,15 @@ import React, { Component } from "react";
 import PropTypes from 'prop-types';
 // antd
 import { Form, Input, Button, Select, InputNumber, Radio } from "antd";
-// store
-import Store from "@/stroe/Index";
+// connect
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+// action
+import { addDepartmentList, updateDepartmentList } from "@/stroe/action/Department"
+// url
+import requestUrl from "@api/requestUrl";
+// api
+import { TableList } from "@api/common";
 const { Option } = Select;
 class FormSearch extends Component {
 
@@ -19,6 +26,10 @@ class FormSearch extends Component {
             }
         }
     }  
+
+    componentDidMount(){
+        this.onSubmit()
+    }
 
     componentWillReceiveProps({ formConfig }){
         this.refs.form.setFieldsValue(formConfig.setFieldValue)
@@ -98,13 +109,35 @@ class FormSearch extends Component {
         formItem.map(item => {
             if(item.type === "Input") { formList.push(this.inputElem(item)); }
             if(item.type === "Select") { 
-                item.options = Store.getState().config[item.optionsKey];
+                item.options = this.props.config[item.optionsKey];
                 formList.push(this.selectElem(item));
             }
             if(item.type === "InputNumber") { formList.push(this.inputNumberElem(item)); }
             if(item.type === "Radio") { formList.push(this.radioElem(item)); }
         })
         return formList;
+    }
+
+    search = (params) => {
+        const requestData = {
+            url: requestUrl[params.url],
+            data: {
+                pageNumber: 1,
+                pageSize: 10
+            }
+        }
+        // 筛选项的参数拼接
+        if(Object.keys(params.searchData).length !== 0) {
+            for(let key in params.searchData) {
+                requestData.data[key] = params.searchData[key]
+            }
+        }
+        // 请求接口
+        TableList(requestData).then(response => {
+            const responseData = response.data.data; // 数据
+            this.props.actions.addDate(responseData)
+        }).catch(error => {
+        })
     }
 
     onSubmit = (value) => {  // 添加、修改
@@ -114,7 +147,10 @@ class FormSearch extends Component {
                 searchData[key] = value[key]
             }
         }
-        this.props.search(searchData)
+        this.search({
+            url: "departmentList",
+            searchData
+        })
     }
 
     render(){
@@ -138,4 +174,23 @@ FormSearch.propTypes = {
 FormSearch.defaultProps = {
     formConfig: {}
 }
-export default FormSearch;
+
+const mapStateToProps = (state) => ({
+    config: state.config
+})
+const mapDispatchToProps = (dispatch) => {
+    return {
+        // addDate: bindActionCreators(addDepartmentList, dispatch)  // 单个action做处理
+        // updateDate: bindActionCreators(updateDepartmentList, dispatch)  // 单个action做处理
+        actions: bindActionCreators({
+            addDate: addDepartmentList,
+            updateDate: updateDepartmentList
+        }, dispatch)
+
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(FormSearch);
