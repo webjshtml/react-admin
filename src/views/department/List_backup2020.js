@@ -6,7 +6,8 @@ import { Button, Switch, message } from "antd";
 // api
 import { Status } from "@api/department";
 // table 组件
-import TableComponent from "@c/tableData/Index";
+import TableComponent from "@c/tableData/Table";
+import FormSearch from "@c/formSearch/Index";
 // Store
 import Store from "@/stroe/Index";
 // action
@@ -23,10 +24,28 @@ class DepartmentList extends Component {
             pageNumber: 1,
             pageSize: 10,
             keyWork: "",
+            // 筛选 form
+            formItem: [
+                { 
+                    type: "Input",
+                    label: "部门名称", 
+                    name: "name", 
+                    placeholder: "请输入部门名称"
+                },
+                { 
+                    type: "Select",
+                    label: "禁启用", 
+                    name: "status", 
+                    placeholder: "请选择",
+                    style: { width: "100px" },
+                    optionsKey: "status"
+                },
+            ],
             // 表头
             tableConfig: {
                 url: "departmentList",
                 checkbox: true,
+                rowKey: "id",
                 thead: [
                     { 
                         title: "部门名称", 
@@ -67,22 +86,7 @@ class DepartmentList extends Component {
                         }
                     }
                 ],
-                formItem: [
-                    { 
-                        type: "Input",
-                        label: "部门名称", 
-                        name: "name", 
-                        placeholder: "请输入部门名称"
-                    },
-                    { 
-                        type: "Select",
-                        label: "禁启用", 
-                        name: "status", 
-                        placeholder: "请选择",
-                        style: { width: "100px" },
-                        optionsKey: "status"
-                    },
-                ]
+                
             },
             // 表的数据
             data: []
@@ -90,16 +94,7 @@ class DepartmentList extends Component {
     }
     /** 生命周期挂载完成 */
     componentDidMount(){
-        Store.subscribe(() =>
-            console.log(Store.getState())
-        );
-
-        Store.dispatch(addStatus({
-            label: "所有",
-            value: "all"
-        }))
-
-        // Store.dispatch(uploadStatus("aaaaa", false))
+        
     }
     // 获取子组件实例
     getChildRef = (ref) => {
@@ -134,7 +129,8 @@ class DepartmentList extends Component {
     render(){
         return (
             <Fragment>
-                <TableComponent onRef={this.getChildRef} batchButton={true} config={this.state.tableConfig} />
+                <FormSearch formItem={this.state.formItem} />
+                <TableComponent config={this.state.tableConfig} />
             </Fragment>
         )
     }
