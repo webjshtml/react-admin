@@ -10,7 +10,7 @@ import TableComponent from "@c/tableData/Index";
 // Store
 import Store from "@/stroe/Index";
 // action
-import { addStatus, uploadStatus } from "@/stroe/action/Config";
+import { addStatus } from "@/stroe/action/Config";
 class DepartmentList extends Component {
     constructor(props){
         super(props);

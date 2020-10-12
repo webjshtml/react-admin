@@ -29,7 +29,7 @@ class FormCom extends Component {
     componentWillReceiveProps({ formConfig }){
         this.refs.form.setFieldsValue(formConfig.setFieldValue)
     }
-
+    // 校验规则 
     rules = (item) => {
         // state
         const { mesPreix } = this.state;
@@ -43,6 +43,15 @@ class FormCom extends Component {
             rules = rules.concat(item.rules);
         }
         return rules;
+    }
+    // selcctComponent 校验方法
+    validatorSelect = (rule, value) => {
+        if(!value || !value[rule.field]) {
+            return Promise.reject("选项不能为空");
+        }
+        return Promise.resolve();
+        
+
     }
 
     // input
@@ -82,8 +91,8 @@ class FormCom extends Component {
     SelectComponent = (item) => {
         const rules = this.rules(item);
         return (
-            <Form.Item label={item.label} name={item.name} key={item.name} rules={rules}>
-                <SelectComponent url={item.url} propsKey={item.propsKey} />
+            <Form.Item label={item.label} name={item.name} key={item.name} rules={[...rules, {validator: this.validatorSelect}]}>
+                <SelectComponent url={item.url} propsKey={item.propsKey} name={item.name}  />
             </Form.Item>
         )
     }
@@ -126,7 +135,14 @@ class FormCom extends Component {
             this.props.submit(value);
             return false;
         }
-        // 
+        // 数据格式化
+        const formatFormKey = this.props.formConfig.formatFormKey;
+        if(formatFormKey && value[formatFormKey]) {
+            const dataKey = value[formatFormKey]; // 临时存储指定 key 数据
+            delete value.parentId                 // 删除指定的 key
+            value = Object.assign(value, dataKey) // 浅拷贝并合JSON对象
+        }
+        // 请求参数
         const data = {
             url: requestUrl[this.props.formConfig.url],
             data: value

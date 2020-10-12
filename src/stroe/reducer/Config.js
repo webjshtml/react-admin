@@ -1,4 +1,4 @@
-import { configAddStatus, configUploadStatus } from "../Type";
+import { configAddStatus } from "../Type";
 // 全局配置
 const config = {
     status: [

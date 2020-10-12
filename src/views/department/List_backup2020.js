@@ -8,10 +8,6 @@ import { Status } from "@api/department";
 // table 组件
 import TableComponent from "@c/tableData/Table";
 import FormSearch from "@c/formSearch/Index";
-// Store
-import Store from "@/stroe/Index";
-// action
-import { addStatus, uploadStatus } from "@/stroe/action/Config";
 class DepartmentList extends Component {
     constructor(props){
         super(props);

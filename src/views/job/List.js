@@ -55,7 +55,7 @@ class DepartmentList extends Component {
                             return (
                                 <div className="inline-button">
                                     <Button type="primary">
-                                        <Link to={{ pathname: '/index/department/add', state:{ id: rowData.id}}}>编辑</Link>
+                                        <Link to={{ pathname: '/index/job/add', state:{ id: rowData.jobId}}}>编辑</Link>
                                     </Button>
                                     <Button onClick={() => this.delete(rowData.id)}>删除</Button>
                                     {/* 

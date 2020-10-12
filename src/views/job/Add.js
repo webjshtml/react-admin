@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 // antd
 import { message } from "antd";
 // API
-import { Add, Detailed, Edit } from "@/api/department";
+import { Add, Detailed } from "@/api/job";
 // 组件
 import FormCom from "@c/form/Index";
 class DepartmentAdd extends Component {
@@ -10,14 +10,15 @@ class DepartmentAdd extends Component {
         super(props);
         this.state = {
             loading: false,
-            id: "",
+            id: this.props.location.state.id,
             formConfig: {
                 url: "jobAdd",
                 initValue: {
                     number: 0,
                     status: true
                 },
-                setFieldValue: {}
+                setFieldValue: {},
+                formatFormKey: "parentId"
             },
             formLayout: {
                 labelCol: { span: 2 },
@@ -66,20 +67,11 @@ class DepartmentAdd extends Component {
         };
     }
 
-    componentWillMount(){
-        if(this.props.location.state) {
-            this.setState({
-                id: this.props.location.state.id
-            })
-        }
-    }
-
     componentDidMount(){
-        this.getDetailed();
+        this.state.id && this.getDetailed();
     }
 
     getDetailed = () => {
-        if(!this.props.location.state) { return false }
         Detailed({id: this.state.id}).then(response => {
             this.setState({
                 formConfig: {
