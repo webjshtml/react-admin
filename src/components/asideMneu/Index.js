@@ -5,7 +5,7 @@ import { UserOutlined } from '@ant-design/icons';
 // antd
 import { Menu } from "antd";
 // 路由
-import Router from "../../router/Index";
+import Router from "../../router/index";
 const { SubMenu } = Menu;
 
 class AsideMenu extends Component {

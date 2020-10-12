@@ -5,8 +5,11 @@ import PropTypes from 'prop-types';
 import { requestData } from "@api/common";
 // url
 import requestUrl from "@api/requestUrl";
+// components
+import SelectComponent from "../select/Index";
 // antd
 import { Form, Input, Button, Select, InputNumber, Radio, message } from "antd";
+
 const { Option } = Select;
 
 class FormCom extends Component {
@@ -51,7 +54,7 @@ class FormCom extends Component {
             </Form.Item>
         )
     }
-    // input
+    // inputNumber
     inputNumberElem = (item) => {
         const rules = this.rules(item);
         return (
@@ -75,7 +78,16 @@ class FormCom extends Component {
             </Form.Item>
         )
     }
-    // select
+    // SelectComponent
+    SelectComponent = (item) => {
+        const rules = this.rules(item);
+        return (
+            <Form.Item label={item.label} name={item.name} key={item.name} rules={rules}>
+                <SelectComponent url={item.url} propsKey={item.propsKey} />
+            </Form.Item>
+        )
+    }
+    // radio
     radioElem = (item) => {
         const rules = this.rules(item);
         return (
@@ -101,6 +113,7 @@ class FormCom extends Component {
         formItem.map(item => {
             if(item.type === "Input") { formList.push(this.inputElem(item)); }
             if(item.type === "Select") { formList.push(this.selectElem(item)); }
+            if(item.type === "SelectComponent") { formList.push(this.SelectComponent(item)); }
             if(item.type === "InputNumber") { formList.push(this.inputNumberElem(item)); }
             if(item.type === "Radio") { formList.push(this.radioElem(item)); }
         })
@@ -113,6 +126,7 @@ class FormCom extends Component {
             this.props.submit(value);
             return false;
         }
+        // 
         const data = {
             url: requestUrl[this.props.formConfig.url],
             data: value
