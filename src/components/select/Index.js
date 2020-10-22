@@ -12,6 +12,7 @@ const { Option } = Select;
 class SelectComponent extends Component {
     constructor(props){
         super();
+        console.log(props)
         this.state = {
             props: props.propsKey,
             options: [],
@@ -24,6 +25,16 @@ class SelectComponent extends Component {
     componentDidMount(){
         this.getSelectList();
     }
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.initValue.parentId) {
+            return {
+                value: props.initValue.parentId
+            };
+        }
+        return null;
+    }
+
     // 请求数据
     getSelectList = () => {
         const url = this.props.url;

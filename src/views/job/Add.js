@@ -13,9 +13,11 @@ class DepartmentAdd extends Component {
             id: this.props.location.state.id,
             formConfig: {
                 url: "jobAdd",
+                editKey: "",
                 initValue: {
                     number: 0,
-                    status: true
+                    status: true,
+                    parentId: ""
                 },
                 setFieldValue: {},
                 formatFormKey: "parentId"
@@ -73,10 +75,13 @@ class DepartmentAdd extends Component {
 
     getDetailed = () => {
         Detailed({id: this.state.id}).then(response => {
+            console.log(response.data.data)
             this.setState({
                 formConfig: {
                     ...this.state.formConfig,
-                    setFieldValue: response.data.data
+                    setFieldValue: response.data.data,
+                    url: "jobEdit",
+                    editKey: "jobId"
                 }
             })
             // this.refs.form.setFieldsValue(response.data.data);
@@ -86,17 +91,17 @@ class DepartmentAdd extends Component {
     onHandlerEdit = (value) => {
         const requestData = value;
         requestData.id = this.state.id;
-        Edit(requestData).then(response => {
-            const data = response.data;
-            message.info(data.message)
-            this.setState({
-                loading: false
-            })
-        }).catch(error => {
-            this.setState({
-                loading: false
-            })
-        })
+        // Edit(requestData).then(response => {
+        //     const data = response.data;
+        //     message.info(data.message)
+        //     this.setState({
+        //         loading: false
+        //     })s
+        // }).catch(error => {
+        //     this.setState({
+        //         loading: false
+        //     })
+        // })
     }
     /** 添加信息 */
     onHandlerAdd = (value) => {

@@ -27,7 +27,7 @@ class FormCom extends Component {
     }  
 
     componentWillReceiveProps({ formConfig }){
-        this.refs.form.setFieldsValue(formConfig.setFieldValue)
+        this.refs.form.setFieldsValue(formConfig.setFieldValue);
     }
     // 校验规则 
     rules = (item) => {
@@ -92,7 +92,7 @@ class FormCom extends Component {
         const rules = this.rules(item);
         return (
             <Form.Item label={item.label} name={item.name} key={item.name} rules={[...rules, {validator: this.validatorSelect}]}>
-                <SelectComponent url={item.url} propsKey={item.propsKey} name={item.name}  />
+                <SelectComponent url={item.url} propsKey={item.propsKey} name={item.name} initValue={this.props.formConfig.setFieldValue} />
             </Form.Item>
         )
     }
@@ -135,6 +135,7 @@ class FormCom extends Component {
             this.props.submit(value);
             return false;
         }
+        
         // 数据格式化
         const formatFormKey = this.props.formConfig.formatFormKey;
         if(formatFormKey && value[formatFormKey]) {
@@ -142,6 +143,11 @@ class FormCom extends Component {
             delete value.parentId                 // 删除指定的 key
             value = Object.assign(value, dataKey) // 浅拷贝并合JSON对象
         }
+        // 检测是否为编辑状态
+        const editKey = this.props.formConfig.editKey;
+        editKey && (value[editKey] = this.props.formConfig.setFieldValue[editKey]);
+        console.log(value);
+        return false;
         // 请求参数
         const data = {
             url: requestUrl[this.props.formConfig.url],
