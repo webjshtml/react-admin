@@ -32,3 +32,14 @@ export function Detailed(data){
         data,
     })
 }
+
+/**
+ * 禁启用
+ */
+export function Status(data){
+    return service.request({
+        url: "/job/status/",
+        method: "post",
+        data,
+    })
+}

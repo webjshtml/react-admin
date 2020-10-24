@@ -24,6 +24,24 @@ class SelectComponent extends Component {
     componentDidMount(){
         this.getSelectList();
     }
+
+    static getDerivedStateFromProps(nextProps, prevState){  // 1、静态的，无法获取 this.state，2、必须有返回
+        let { value, name } = nextProps;
+        if(!value) { return false; }
+        // 判断是否是JSON对象
+        if(Object.prototype.toString.call(value) == "[object Object]") {
+            value = value[name]   // { parentId: "760" }
+        }
+        if(value != prevState.value) {
+            return {
+                value: value
+            }
+        }
+        // 直接放在最后面
+        return null;
+    }
+
+
     // 请求数据
     getSelectList = () => {
         const url = this.props.url;

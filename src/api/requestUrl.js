@@ -8,6 +8,8 @@ const requestUrl = {
     // job
     "jobList": "/job/list/",           // 列表
     "jobAdd": "/job/add/",             // 添加
+    "jobEdit": "/job/edit/",
+    "jobListDelete": "/job/delete/"    // 职位删除
 
 }
 export default requestUrl;

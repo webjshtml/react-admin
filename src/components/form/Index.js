@@ -26,7 +26,7 @@ class FormCom extends Component {
         }
     }  
 
-    componentWillReceiveProps({ formConfig }){
+    componentWillReceiveProps({ formConfig }){ 
         this.refs.form.setFieldsValue(formConfig.setFieldValue)
     }
     // 校验规则 
@@ -46,12 +46,10 @@ class FormCom extends Component {
     }
     // selcctComponent 校验方法
     validatorSelect = (rule, value) => {
-        if(!value || !value[rule.field]) {
-            return Promise.reject("选项不能为空");
+        if(value || value[rule.field]) {
+            return Promise.resolve();
         }
-        return Promise.resolve();
-        
-
+        return Promise.reject("选项不能为空");
     }
 
     // input
@@ -129,23 +127,37 @@ class FormCom extends Component {
         return formList;
     }
 
+    formatData = (value) => {
+        // 请求数据
+        const requestData = JSON.parse(JSON.stringify(value));
+        // 需要格式化 JOSN 对象的 key
+        const { formatFormKey, editKey, setFieldValue } = this.props.formConfig;
+        const keyValue = requestData[formatFormKey];
+        // 如果是 JSON 对象
+        if(Object.prototype.toString.call(keyValue) == "[object Object]") {
+            requestData[formatFormKey] = keyValue[formatFormKey]
+        }
+        // 判断是否存在“编辑”状态指定的key
+        if(editKey) {
+            requestData[editKey] = setFieldValue[editKey]
+        }
+        return requestData; 
+    }
+
     onSubmit = (value) => {  // 添加、修改
         // 传入的 submit
         if(this.props.submit) {
             this.props.submit(value);
             return false;
         }
-        // 数据格式化
-        const formatFormKey = this.props.formConfig.formatFormKey;
-        if(formatFormKey && value[formatFormKey]) {
-            const dataKey = value[formatFormKey]; // 临时存储指定 key 数据
-            delete value.parentId                 // 删除指定的 key
-            value = Object.assign(value, dataKey) // 浅拷贝并合JSON对象
-        }
+        /**
+         * 参数为 JSON 对象时进行处理
+         */
+        const paramsData = this.formatData(value);
         // 请求参数
         const data = {
             url: requestUrl[this.props.formConfig.url],
-            data: value
+            data: paramsData
         }
         this.setState({ loading: true })
         requestData(data).then(response => {

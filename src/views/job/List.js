@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 // antd
 import { Button, Switch, message } from "antd";
 // api
-import { Status } from "@api/department";
+import { Status } from "@api/job";
 // table 组件
 import TableComponent from "@c/tableData/Index";
 // Store
@@ -57,7 +57,7 @@ class DepartmentList extends Component {
                                     <Button type="primary">
                                         <Link to={{ pathname: '/index/job/add', state:{ id: rowData.jobId}}}>编辑</Link>
                                     </Button>
-                                    <Button onClick={() => this.delete(rowData.id)}>删除</Button>
+                                    <Button onClick={() => this.delete(rowData.jobId)}>删除</Button>
                                     {/* 
                                         在父组件获取子组件的实例
                                         1、在子组件调用父组件方法，并把子组件实例传回给父组件，（已经存储了子组件的实例）
@@ -109,14 +109,13 @@ class DepartmentList extends Component {
     
     /** 禁启用 */
     onHandlerSwitch(data){
-        if(!data.status) { return false; }
         if(this.state.flag) { return false; }
         const requestData = {
-            id: data.id,
-            status: data.status === "1" ? false : true
+            id: data.jobId,
+            status: !data.status
         }
         // 第一种做法，用组件本身异步
-        this.setState({id: data.id}) 
+        this.setState({id: data.jobIds}) 
         // 第二种做法，自己做的开关
         // this.setState({flag: true}) 
         Status(requestData).then(response => {
