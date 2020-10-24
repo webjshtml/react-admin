@@ -16,7 +16,8 @@ class DepartmentAdd extends Component {
                 editKey: "",
                 initValue: {
                     number: 0,
-                    status: true
+                    status: true,
+                    parentId: ""
                 },
                 setFieldValue: {},
                 formatFormKey: "parentId"
@@ -74,6 +75,7 @@ class DepartmentAdd extends Component {
 
     getDetailed = () => {
         Detailed({id: this.state.id}).then(response => {
+            console.log(response.data.data)
             this.setState({
                 formConfig: {
                     ...this.state.formConfig,

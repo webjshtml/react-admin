@@ -115,7 +115,7 @@ class DepartmentList extends Component {
             status: !data.status
         }
         // 第一种做法，用组件本身异步
-        this.setState({id: data.jobIds}) 
+        this.setState({id: data.jobId}) 
         // 第二种做法，自己做的开关
         // this.setState({flag: true}) 
         Status(requestData).then(response => {
