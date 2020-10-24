@@ -34,11 +34,7 @@ export function Detailed(data){
 }
 
 /**
-<<<<<<< HEAD
  * 禁启用
-=======
- * 详情
->>>>>>> d98af0f9bdda13ff3ca971646c4c6a092aa5fb90
  */
 export function Status(data){
     return service.request({
@@ -46,8 +42,4 @@ export function Status(data){
         method: "post",
         data,
     })
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> d98af0f9bdda13ff3ca971646c4c6a092aa5fb90
