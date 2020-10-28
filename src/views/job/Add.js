@@ -1,16 +1,25 @@
 import React, { Component, Fragment } from "react";
 // antd
-import { message } from "antd";
+import { message, Select } from "antd";
 // API
 import { Add, Detailed } from "@/api/job";
+import { requestData } from "@api/common";
+// url
+import requestUrl from "@api/requestUrl";
 // 组件
 import FormCom from "@c/form/Index";
+const { Option } = Select;
 class DepartmentAdd extends Component {
     constructor(props){
         super(props);
         this.state = {
             loading: false,
             id: this.props.location.state ? this.props.location.state.id : "",
+            // select
+            select: [
+                { value: 10, label: "研发部"},
+                { value: 11, label: "行政部"}
+            ],
             formConfig: {
                 url: "jobAdd",
                 editKey: "",
@@ -28,15 +37,11 @@ class DepartmentAdd extends Component {
             },
             formItem: [
                 { 
-                    type: "SelectComponent",
+                    type: "Slot",
                     label: "部门", 
                     name: "parentId", 
                     required: true,
-                    url: "getDepartmentList", 
-                    propsKey: {
-                        value: "id",
-                        label: "name"
-                    },
+                    slotName: "department",
                     style: { width: "200px" },
                     placeholder: "请选择部门"
                 },
@@ -71,6 +76,7 @@ class DepartmentAdd extends Component {
 
     componentDidMount(){
         this.state.id && this.getDetailed();
+        this.getSelectList();
     }
 
     getDetailed = () => {
@@ -85,6 +91,20 @@ class DepartmentAdd extends Component {
                 }
             })
             // this.refs.form.setFieldsValue(response.data.data);
+        })
+    }
+    // 请求数据
+    getSelectList = () => {
+        const data = {
+            url: requestUrl["getDepartmentList"]
+        }
+        // 不存在 url 时，阻止
+        if(!data.url) { return false; }
+        // 接口
+        requestData(data).then(response => {
+            this.setState({
+                select: response.data.data.data
+            })
         })
     }
     /** 编辑信息 */
@@ -126,8 +146,25 @@ class DepartmentAdd extends Component {
     render(){
         return (
             <Fragment>
-                {/* <FormCom formItem={this.state.formItem} formLayout={this.state.formLayout} formConfig={this.state.formConfig} submit={this.onHandlerSubmit} /> */}
-                <FormCom formItem={this.state.formItem} formLayout={this.state.formLayout} formConfig={this.state.formConfig} />
+                <FormCom formItem={this.state.formItem} formLayout={this.state.formLayout} formConfig={this.state.formConfig}>
+                    {/** 插槽 */}
+                    <Select ref="department">
+                        {
+                            this.state.select && this.state.select.map(elem => {
+                                return <Option value={elem.id} key={elem.id}>{elem.name}</Option>
+                            })
+                        }
+                    </Select>
+                </FormCom>
+                {
+                /**
+                 * 1、插槽没有元素的情况，this.props.children 获取的是 undefault。
+                 * 2、只有一个元素的情况，就是一个 object 对象。
+                 * 3、多个的情况下，就是 Array 数组对象。
+                 * 
+                 * this.props.children 获取所有
+                 */
+                 }
           </Fragment>
         )
     }
