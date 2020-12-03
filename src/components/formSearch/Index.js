@@ -95,7 +95,7 @@ class FormSearch extends Component {
         if(!formItem || (formItem && formItem.length === 0)) { return false; }
         // 循环处理
         const formList = []
-        formItem.map(item => {
+        formItem.forEach(item => {
             if(item.type === "Input") { formList.push(this.inputElem(item)); }
             if(item.type === "Select") { 
                 item.options = Store.getState().config[item.optionsKey];

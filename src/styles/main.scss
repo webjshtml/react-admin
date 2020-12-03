@@ -19,4 +19,14 @@ body {
 .pull-right { float: right; }
 
 // spacing
+.spacing-15 { height: 15px; }
 .spacing-30 { height: 30px; }
+
+.form-column {
+    padding-top: 15px;
+    border-top: 1px solid #e3e3e3;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    font-size: 16px;
+    color: #344a5f;
+}

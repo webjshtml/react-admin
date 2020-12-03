@@ -11,7 +11,7 @@ import TableComponent from "@c/tableData/Index";
 import Store from "@/stroe/Index";
 // action
 import { addStatus } from "@/stroe/action/Config";
-class DepartmentList extends Component {
+class StaffList extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -139,4 +139,4 @@ class DepartmentList extends Component {
         )
     }
 }
-export default DepartmentList;
+export default StaffList;

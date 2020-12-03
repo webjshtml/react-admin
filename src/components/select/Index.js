@@ -30,10 +30,10 @@ class SelectComponent extends Component {
         let { value, name } = nextProps;
         if(!value) { return false; }
         // 判断是否是JSON对象
-        if(Object.prototype.toString.call(value) == "[object Object]") {
+        if(Object.prototype.toString.call(value) === "[object Object]") {
             value = value[name]   // { parentId: "760" }
         }
-        if(value != prevState.value) {
+        if(value !== prevState.value) {
             return {
                 value: value
             }

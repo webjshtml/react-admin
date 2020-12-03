@@ -7,8 +7,12 @@ import { requestData } from "@api/common";
 import requestUrl from "@api/requestUrl";
 // components
 import SelectComponent from "../select/Index";
+import UploadComponent from "../upload/Index";
 // antd
-import { Form, Input, Button, Select, InputNumber, Radio, message } from "antd";
+import { Form, Input, Button, Select, InputNumber, Radio, message, DatePicker } from "antd";
+// 配置日期语言
+import 'moment/locale/zh-cn';
+import locale from 'antd/es/date-picker/locale/zh_CN';
 
 const { Option } = Select;
 
@@ -21,7 +25,9 @@ class FormCom extends Component {
             mesPreix: {
                 "Input": "请输入",
                 "Radio": "请选择",
-                "Select": "请选择"
+                "Select": "请选择",
+                "Date":  "请选择",
+                "Upload": "请上传"
             }
         }
     }  
@@ -94,6 +100,15 @@ class FormCom extends Component {
             </Form.Item>
         )
     }
+    // UploadComponent
+    uploadElem = (item) => {
+        const rules = this.rules(item);
+        return (
+            <Form.Item label={item.label} name={item.name} key={item.name} rules={[...rules, {validator: this.validatorSelect}]}>
+                <UploadComponent name={item.name} />
+            </Form.Item>
+        )
+    }
     // 插槽
     slotElem = (item) => {
         const rules = this.rules(item);
@@ -118,6 +133,23 @@ class FormCom extends Component {
             </Form.Item>
         )
     }
+    // date
+    dateElem = (item) => {
+        const rules = this.rules(item);
+        return (
+            <Form.Item label={item.label} name={item.name} key={item.name} rules={rules}>
+                <DatePicker locale={locale} format={item.format} picker={item.mode} />
+            </Form.Item>
+        )
+    }
+    // 栏目
+    columnElem = (item) => {
+        return (
+            <div className="form-column">
+                <h4>{item.label}</h4>
+            </div>
+        )
+    }
     
     // 初始化
     initFormItem = () => {
@@ -126,13 +158,16 @@ class FormCom extends Component {
         if(!formItem || (formItem && formItem.length === 0)) { return false; }
         // 循环处理
         const formList = []
-        formItem.map(item => {
+        formItem.forEach(item => {  // map, filter, reduce
             if(item.type === "Input") { formList.push(this.inputElem(item)); }
             if(item.type === "Select") { formList.push(this.selectElem(item)); }
             if(item.type === "SelectComponent") { formList.push(this.SelectComponent(item)); }
             if(item.type === "InputNumber") { formList.push(this.inputNumberElem(item)); }
             if(item.type === "Radio") { formList.push(this.radioElem(item)); }
             if(item.type === "Slot") { formList.push(this.slotElem(item)); }
+            if(item.type === "Column") { formList.push(this.columnElem(item)); }
+            if(item.type === "Date") { formList.push(this.dateElem(item)); }
+            if(item.type === "Upload") { formList.push(this.uploadElem(item)); }
         })
         return formList;
     }
@@ -144,7 +179,7 @@ class FormCom extends Component {
         const { formatFormKey, editKey, setFieldValue } = this.props.formConfig;
         const keyValue = requestData[formatFormKey];
         // 如果是 JSON 对象
-        if(Object.prototype.toString.call(keyValue) == "[object Object]") {
+        if(Object.prototype.toString.call(keyValue) === "[object Object]") {  // ==匹配数据是否相等， === 匹配数据及数据类型  1 == "1" => true, 1 === "1" => false
             requestData[formatFormKey] = keyValue[formatFormKey]
         }
         // 判断是否存在“编辑”状态指定的key
@@ -186,7 +221,6 @@ class FormCom extends Component {
         return (
             <Form ref="form" onFinish={this.onSubmit} initialValues={this.props.formConfig.initValue} {...this.props.formLayout}>
                 { this.initFormItem() }
-                { console.log(this.props.children) }
                 <Form.Item>
                     <Button loading={this.state.loading} type="primary" htmlType="submit">确定</Button>
                 </Form.Item>

@@ -36,6 +36,15 @@ const router = [
       ]
     },
     {
+      title: '职员管理',
+      icon: 'edit',
+      key: '/index/staff',
+      child: [
+        {key: '/index/staff/list', title: '职员列表', icon: ''},
+        {key: '/index/staff/add', title: '添加职员', icon: ''}
+      ]
+    },
+    {
       title: '请假',
       icon: 'info-circle-o',
       key: '/home/about'
