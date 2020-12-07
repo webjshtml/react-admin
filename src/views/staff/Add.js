@@ -190,7 +190,6 @@ class StaffAdd extends Component {
 
     componentDidMount(){
         this.state.id && this.getDetailed();
-        this.getSelectList();
     }
 
     getDetailed = () => {
