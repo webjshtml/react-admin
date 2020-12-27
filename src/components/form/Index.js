@@ -8,6 +8,7 @@ import requestUrl from "@api/requestUrl";
 // components
 import SelectComponent from "../select/Index";
 import UploadComponent from "../upload/Index";
+import EditorComponent from "../editor/Index";
 // antd
 import { Form, Input, Button, Select, InputNumber, Radio, message, DatePicker } from "antd";
 // 配置日期语言
@@ -24,6 +25,7 @@ class FormCom extends Component {
             loading: false,
             mesPreix: {
                 "Input": "请输入",
+                "Editor": "请输入",
                 "Radio": "请选择",
                 "Select": "请选择",
                 "Date":  "请选择",
@@ -105,7 +107,16 @@ class FormCom extends Component {
         const rules = this.rules(item);
         return (
             <Form.Item label={item.label} name={item.name} key={item.name} rules={[...rules, {validator: this.validatorSelect}]}>
-                <UploadComponent name={item.name} />
+                <UploadComponent name={item.name} request={item.request} />
+            </Form.Item>
+        )
+    }
+    // EditorComponent
+    editorElem = (item) => {
+        const rules = this.rules(item);
+        return (
+            <Form.Item label={item.label} name={item.name} key={item.name} rules={[...rules, {validator: this.validatorSelect}]}>
+                <EditorComponent name={item.name} />
             </Form.Item>
         )
     }
@@ -168,6 +179,7 @@ class FormCom extends Component {
             if(item.type === "Column") { formList.push(this.columnElem(item)); }
             if(item.type === "Date") { formList.push(this.dateElem(item)); }
             if(item.type === "Upload") { formList.push(this.uploadElem(item)); }
+            if(item.type === "Editor") { formList.push(this.editorElem(item)); }
         })
         return formList;
     }
