@@ -27,6 +27,11 @@ class UploadComponent extends Component {
 
     componentDidMount(){}
 
+    // 卸载
+    componentWillUnmount(){
+        localStorage.removeItem("uploadTokey");  // 时效性
+    }
+
     /**
      * 在公司时，并不是这样传参数。
      */
@@ -101,7 +106,7 @@ class UploadComponent extends Component {
     triggerChange = (changedValue) => {
         const onChange = this.props.onChange;
         if (onChange) {
-          onChange({[this.state.name]: changedValue});
+          onChange(changedValue);
         }
     };
 

@@ -28,6 +28,7 @@ class FormCom extends Component {
                 "Editor": "请输入",
                 "Radio": "请选择",
                 "Select": "请选择",
+                "SelectComponent": "请选择",
                 "Date":  "请选择",
                 "Upload": "请上传"
             }
@@ -53,11 +54,9 @@ class FormCom extends Component {
         return rules;
     }
     // selcctComponent 校验方法
-    validatorSelect = (rule, value) => {
-        if(value || value[rule.field]) {
-            return Promise.resolve();
-        }
-        return Promise.reject("选项不能为空");
+    validatorComponents = (rule, value) => {
+        if(value) { return Promise.resolve(); }
+        return Promise.reject("");
     }
 
     // input
@@ -97,7 +96,7 @@ class FormCom extends Component {
     SelectComponent = (item) => {
         const rules = this.rules(item);
         return (
-            <Form.Item label={item.label} name={item.name} key={item.name} rules={[...rules, {validator: this.validatorSelect}]}>
+            <Form.Item label={item.label} name={item.name} key={item.name} rules={[...rules, {validator: this.validatorComponents}]}>
                 <SelectComponent url={item.url} propsKey={item.propsKey} name={item.name} initValue={this.props.formConfig.setFieldValue} />
             </Form.Item>
         )
@@ -106,7 +105,7 @@ class FormCom extends Component {
     uploadElem = (item) => {
         const rules = this.rules(item);
         return (
-            <Form.Item label={item.label} name={item.name} key={item.name} rules={[...rules, {validator: this.validatorSelect}]}>
+            <Form.Item label={item.label} name={item.name} key={item.name} rules={[...rules, {validator: this.validatorComponents}]}>
                 <UploadComponent name={item.name} request={item.request} />
             </Form.Item>
         )
@@ -115,7 +114,7 @@ class FormCom extends Component {
     editorElem = (item) => {
         const rules = this.rules(item);
         return (
-            <Form.Item label={item.label} name={item.name} key={item.name} rules={[...rules, {validator: this.validatorSelect}]}>
+            <Form.Item label={item.label} name={item.name} key={item.name} rules={[...rules, {validator: this.validatorComponents}]}>
                 <EditorComponent name={item.name} />
             </Form.Item>
         )
