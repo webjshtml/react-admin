@@ -30,3 +30,13 @@ body {
     font-size: 16px;
     color: #344a5f;
 }
+.form-item-inline-control {
+    .ant-form-item {
+        display: block;
+    }
+    .ant-form-item-label {
+        max-width: 100%;
+        width: 100%;
+        text-align: left;
+    }
+}

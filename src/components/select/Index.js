@@ -12,7 +12,6 @@ const { Option } = Select;
 class SelectComponent extends Component {
     constructor(props){
         super();
-        console.log(props)
         this.state = {
             props: props.propsKey,
             options: [],

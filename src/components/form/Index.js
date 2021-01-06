@@ -10,7 +10,7 @@ import SelectComponent from "../select/Index";
 import UploadComponent from "../upload/Index";
 import EditorComponent from "../editor/Index";
 // antd
-import { Form, Input, Button, Select, InputNumber, Radio, message, DatePicker } from "antd";
+import { Form, Input, Button, Select, InputNumber, Radio, message, DatePicker, Row, Col } from "antd";
 // 配置日期语言
 import 'moment/locale/zh-cn';
 import locale from 'antd/es/date-picker/locale/zh_CN';
@@ -152,6 +152,38 @@ class FormCom extends Component {
             </Form.Item>
         )
     }
+
+
+
+    // 内联的控件
+    formItemInlineElem = (item) => {
+        const rules = this.rules(item);
+        return (
+            <Row>
+                <Col span={item.col_label} className="ant-form-item" style={{textAlign: "right"}}>
+                    <div class="ant-form-item-label">
+                        <label for="name" class="ant-form-item-required" title="姓名">{item.label}</label>
+                    </div>
+                </Col>
+                <Col span={item.col_control}>
+                    <Row>
+                        {
+                            item.inline_item.map(elem => {
+                                return (
+                                    <Col span={elem.col} className="form-item-inline-control">{ this.createControl(elem)}</Col>
+                                )
+                            })
+                        }
+                        
+                    </Row>
+                </Col>
+            </Row>
+        )
+    }
+
+
+
+
     // 栏目
     columnElem = (item) => {
         return (
@@ -167,20 +199,22 @@ class FormCom extends Component {
         // 检测是否存在 formItem
         if(!formItem || (formItem && formItem.length === 0)) { return false; }
         // 循环处理
-        const formList = []
-        formItem.forEach(item => {  // map, filter, reduce
-            if(item.type === "Input") { formList.push(this.inputElem(item)); }
-            if(item.type === "Select") { formList.push(this.selectElem(item)); }
-            if(item.type === "SelectComponent") { formList.push(this.SelectComponent(item)); }
-            if(item.type === "InputNumber") { formList.push(this.inputNumberElem(item)); }
-            if(item.type === "Radio") { formList.push(this.radioElem(item)); }
-            if(item.type === "Slot") { formList.push(this.slotElem(item)); }
-            if(item.type === "Column") { formList.push(this.columnElem(item)); }
-            if(item.type === "Date") { formList.push(this.dateElem(item)); }
-            if(item.type === "Upload") { formList.push(this.uploadElem(item)); }
-            if(item.type === "Editor") { formList.push(this.editorElem(item)); }
-        })
+        let formList = formItem.map(item => this.createControl(item));
         return formList;
+    }
+    // 创建表单控件
+    createControl = (item) => {
+        if(item.type === "Input") { return this.inputElem(item); }
+        if(item.type === "Select") { return this.selectElem(item); }
+        if(item.type === "SelectComponent") { return this.SelectComponent(item); }
+        if(item.type === "InputNumber") { return this.inputNumberElem(item); }
+        if(item.type === "Radio") { return this.radioElem(item); }
+        if(item.type === "Slot") { return this.slotElem(item); }
+        if(item.type === "Column") { return this.columnElem(item); }
+        if(item.type === "Date") { return this.dateElem(item); }
+        if(item.type === "Upload") { return this.uploadElem(item); }
+        if(item.type === "Editor") { return this.editorElem(item); }
+        if(item.type === "FormItemInline") { return this.formItemInlineElem(item); }
     }
 
     formatData = (value) => {

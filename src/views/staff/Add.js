@@ -168,6 +168,19 @@ class StaffAdd extends Component {
                 },
                 { 
                     type: "SelectComponent",
+                    label: "部门", 
+                    url: "getDepartmentList",
+                    name: "departmen_id",
+                    propsKey: {
+                        label: "name",
+                        value: "id"
+                    },
+                    required: true,
+                    style: { width: "200px" },
+                    placeholder: "请选择邮箱"
+                },
+                { 
+                    type: "SelectComponent",
                     label: "职位", 
                     url: "jobListAll",
                     name: "job_id",
@@ -180,10 +193,43 @@ class StaffAdd extends Component {
                     placeholder: "请选择邮箱"
                 },
                 { 
-                    type: "Slot",
-                    label: "职位状态", 
-                    name: "job_status", 
-                    slotName: "jobStatus",
+                    type: "FormItemInline",
+                    label: "职员状态", 
+                    name: "name", 
+                    required: true, 
+                    style: { width: "200px" },
+                    placeholder: "请输入姓名",
+                    col_label: 2,
+                    col_control: 22,
+                    inline_item: [
+                        { 
+                            type: "Date",
+                            label: "入职时间", 
+                            name: "job_entry_date", 
+                            required: true, 
+                            style: { width: "100%" },
+                            placeholder: "请输入姓名",
+                            col: 3
+                        },
+                        { 
+                            type: "Date",
+                            label: "转正时间", 
+                            name: "job_formal_date", 
+                            required: true, 
+                            style: { width: "100%" },
+                            placeholder: "请输入姓名",
+                            col: 3
+                        },
+                        { 
+                            type: "Date",
+                            label: "离职时间", 
+                            name: "job_quit_date", 
+                            required: true, 
+                            style: { width: "100%" },
+                            placeholder: "请输入姓名",
+                            col: 3
+                        }
+                    ]
                 },
                 { 
                     type: "Input",
@@ -286,41 +332,10 @@ class StaffAdd extends Component {
         console.log(value)
     }
 
-    /** 职位状态 */
-    onChange = (e) => {
-        this.setState({
-            job_status: e.target.value
-        })
-
-    }
-
     render(){
         return (
             <Fragment>
-                <FormCom formItem={this.state.formItem} formLayout={this.state.formLayout} formConfig={this.state.formConfig} submit={this.onHandlerSubmit}>
-                    {/** 插槽 */}
-                    <div ref="jobStatus" style={{width: "500px"}}>
-                    <Radio.Group onChange={this.onChange} value={this.state.job_status} style={{width: "100%"}}>
-                    <Row gutter={16}>
-                        <Col className="gutter-row" span={8}>
-                            <Radio value={'online'}>在职</Radio>
-                            <div className="spacing-15"></div>
-                            <DatePicker locale={locale} format="YYYY/MM/DD" />
-                        </Col>
-                        <Col className="gutter-row" span={8}>
-                        <Radio value={'vacation'}>休假</Radio>
-                            <div className="spacing-15"></div>
-                            <DatePicker locale={locale} format="YYYY/MM/DD" />
-                        </Col>
-                        <Col className="gutter-row" span={8}>
-                        <Radio value={'quit'}>离职</Radio>
-                            <div className="spacing-15"></div>
-                            <DatePicker locale={locale} format="YYYY/MM/DD" />
-                        </Col>
-                    </Row>
-                    </Radio.Group>
-                    </div>
-                </FormCom>
+                <FormCom formItem={this.state.formItem} formLayout={this.state.formLayout} formConfig={this.state.formConfig} submit={this.onHandlerSubmit}></FormCom>
           </Fragment>
         )
     }

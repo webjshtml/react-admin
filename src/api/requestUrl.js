@@ -10,7 +10,10 @@ const requestUrl = {
     "jobListAll": "/job/listAll/",           // 列表
     "jobAdd": "/job/add/",             // 添加
     "jobEdit": "/job/edit/",
-    "jobListDelete": "/job/delete/"    // 职位删除
+    "jobListDelete": "/job/delete/",    // 职位删除
+    // 职员
+    "staffList": "/staff/list/",
+    "staffListDelete": "/staff/delete/",    // 职员删除
 
 }
 export default requestUrl;

@@ -92,6 +92,7 @@ class DepartmentAdd extends Component {
         const requestData = value;
         requestData.id = this.state.id;
         Edit(requestData).then(response => {
+            console.log(response.data)
             const data = response.data;
             message.info(data.message)
             this.setState({

@@ -25,7 +25,7 @@ class StaffList extends Component {
             keyWork: "",
             // 表头
             tableConfig: {
-                url: "jobList",
+                url: "staffList",
                 checkbox: true,
                 thead: [
                     { 
