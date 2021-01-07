@@ -12,12 +12,35 @@ export function Add(data){
 }
 
 /**
- * 添加
+ * 详情
  */
 export function Detailed(data){
     return service.request({
-        url: "/staff/add/",
+        url: "/staff/detailed/",
         method: "post",
         data,
     })
 }
+
+/**
+ * 禁启用
+ */
+export function Status(data){
+    return service.request({
+        url: "/staff/status/",
+        method: "post",
+        data,
+    })
+}
+
+/**
+ * 编辑
+ */
+export function Edit(data){
+    return service.request({
+        url: "/staff/edit/",
+        method: "post",
+        data,
+    })
+}
+

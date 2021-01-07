@@ -4,13 +4,9 @@ import { Link } from "react-router-dom";
 // antd
 import { Button, Switch, message } from "antd";
 // api
-import { Status } from "@api/job";
+import { Status } from "@api/staff";
 // table 组件
 import TableComponent from "@c/tableData/Index";
-// Store
-import Store from "@/stroe/Index";
-// action
-import { addStatus } from "@/stroe/action/Config";
 class StaffList extends Component {
     constructor(props){
         super(props);
@@ -29,6 +25,11 @@ class StaffList extends Component {
                 checkbox: true,
                 thead: [
                     { 
+                        title: "姓名", 
+                        dataIndex: "full_name", 
+                        key: "full_name"
+                    },
+                    { 
                         title: "职位名称", 
                         dataIndex: "jobName", 
                         key: "jobName"
@@ -37,6 +38,11 @@ class StaffList extends Component {
                         title: "部门名称", 
                         dataIndex: "name", 
                         key: "name"
+                    },
+                    { 
+                        title: "入职日期", 
+                        dataIndex: "job_entry_date", 
+                        key: "job_entry_date"
                     },
                     { 
                         title: "禁启用", 
@@ -55,9 +61,9 @@ class StaffList extends Component {
                             return (
                                 <div className="inline-button">
                                     <Button type="primary">
-                                        <Link to={{ pathname: '/index/job/add', state:{ id: rowData.jobId}}}>编辑</Link>
+                                        <Link to={{ pathname: '/index/staff/add', state:{ id: rowData.staff_id}}}>编辑</Link>
                                     </Button>
-                                    <Button onClick={() => this.delete(rowData.jobId)}>删除</Button>
+                                    <Button onClick={() => this.delete(rowData.staff_id)}>删除</Button>
                                     {/* 
                                         在父组件获取子组件的实例
                                         1、在子组件调用父组件方法，并把子组件实例传回给父组件，（已经存储了子组件的实例）
@@ -90,18 +96,8 @@ class StaffList extends Component {
         };
     }
     /** 生命周期挂载完成 */
-    componentDidMount(){
-        Store.subscribe(() =>
-            console.log(Store.getState())
-        );
+    componentDidMount(){}
 
-        Store.dispatch(addStatus({
-            label: "所有",
-            value: "all"
-        }))
-
-        // Store.dispatch(uploadStatus("aaaaa", false))
-    }
     // 获取子组件实例
     getChildRef = (ref) => {
         this.tableComponent = ref; // 存储子组件
@@ -111,11 +107,11 @@ class StaffList extends Component {
     onHandlerSwitch(data){
         if(this.state.flag) { return false; }
         const requestData = {
-            id: data.jobId,
+            id: data.staff_id,
             status: !data.status
         }
         // 第一种做法，用组件本身异步
-        this.setState({id: data.jobId}) 
+        this.setState({id: data.staff_id}) 
         // 第二种做法，自己做的开关
         // this.setState({flag: true}) 
         Status(requestData).then(response => {

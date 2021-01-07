@@ -27,6 +27,18 @@ class UploadComponent extends Component {
 
     componentDidMount(){}
 
+    static getDerivedStateFromProps(nextProps, prevState){  // 1、静态的，无法获取 this.state，2、必须有返回
+        let { value } = nextProps;
+        if(!value) { return false; }
+        if(value !== prevState.value) {
+            return { // 父组件的数组更新到 this.state
+                imageUrl: value
+            }
+        }
+        // 直接放在最后面
+        return null;
+    }
+
     // 卸载
     componentWillUnmount(){
         localStorage.removeItem("uploadTokey");  // 时效性

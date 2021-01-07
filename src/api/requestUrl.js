@@ -13,7 +13,7 @@ const requestUrl = {
     "jobListDelete": "/job/delete/",    // 职位删除
     // 职员
     "staffList": "/staff/list/",
-    "staffListDelete": "/staff/delete/",    // 职员删除
+    "staffListDelete": "/staff/delete/",  // 职员删除
 
 }
 export default requestUrl;

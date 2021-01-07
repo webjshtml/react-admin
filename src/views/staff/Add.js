@@ -1,20 +1,19 @@
 import React, { Component, Fragment } from "react";
 // antd
-import { message, Row, Col, Radio, DatePicker } from "antd";
+import { message } from "antd";
 // API
-import { Add, Detailed } from "@/api/staff";
+import { Add, Detailed, Edit } from "@/api/staff";
 import { requestData } from "@api/common";
 // url
 import requestUrl from "@api/requestUrl";
 // 组件
 import FormCom from "@c/form/Index";
-// 配置日期语言
-import 'moment/locale/zh-cn';
-import locale from 'antd/es/date-picker/locale/zh_CN';
 // 默认数据
 import { nation, face, education } from "@/js/data";
 // 检验
 import { validate_phone } from "@/utils/validate";
+// 日期转换
+import moment from 'moment';
 class StaffAdd extends Component {
     constructor(props){
         super(props);
@@ -265,13 +264,22 @@ class StaffAdd extends Component {
 
     getDetailed = () => {
         Detailed({id: this.state.id}).then(response => {
-            console.log(response.data.data)
+
+            const data = response.data.data;
+            // 日期处理
+            const basisDate = {
+                birthday: data.birthday ? moment(data.birthday) : null,
+                job_entry_date: data.job_entry_date ? moment(data.job_entry_date) : null,
+                job_formal_date: data.job_formal_date ? moment(data.job_formal_date) : null,
+                job_quit_date: data.job_quit_date ? moment(data.job_quit_date) : null,
+            }
+
             this.setState({
                 formConfig: {
                     ...this.state.formConfig,
-                    setFieldValue: response.data.data,
-                    url: "jobEdit",
-                    editKey: "jobId"
+                    setFieldValue: {...data, ...basisDate},
+                    url: "staffEdit",
+                    editKey: "staff_id"
                 }
             })
             // this.refs.form.setFieldsValue(response.data.data);
@@ -295,17 +303,23 @@ class StaffAdd extends Component {
     onHandlerEdit = (value) => {
         const requestData = value;
         requestData.id = this.state.id;
-        // Edit(requestData).then(response => {
-        //     const data = response.data;
-        //     message.info(data.message)
-        //     this.setState({
-        //         loading: false
-        //     })
-        // }).catch(error => {
-        //     this.setState({
-        //         loading: false
-        //     })
-        // })
+        // 日期转换
+        requestData.birthday = new Date(requestData.birthday);
+        requestData.job_entry_date = new Date(requestData.job_entry_date);
+        requestData.job_formal_date = new Date(requestData.job_formal_date);
+        requestData.job_quit_date = new Date(requestData.job_quit_date);
+        
+        Edit(requestData).then(response => {
+            const data = response.data;
+            message.info(data.message)
+            this.setState({
+                loading: false
+            })
+        }).catch(error => {
+            this.setState({
+                loading: false
+            })
+        })
     }
     /** 添加信息 */
     onHandlerAdd = (value) => {

@@ -6,10 +6,24 @@ import { Upload } from "@api/common";
 class EditorComponent extends Component {
     constructor(props){
         super();
-        this.state = {}
+        this.state = {
+            value: ""
+        }
     }  
 
     componentDidMount(){}
+
+    static getDerivedStateFromProps(nextProps, prevState){  // 1、静态的，无法获取 this.state，2、必须有返回
+        let { value } = nextProps;
+        if(!value) { return false; }
+        if(value !== prevState.value) {
+            return { // 父组件的数组更新到 this.state
+                value
+            }
+        }
+        // 直接放在最后面
+        return null;
+    }
 
     /** 获取富文本内容 */
     handleEditorChange = (value) => {
@@ -56,7 +70,7 @@ class EditorComponent extends Component {
                 inline={false}
                 selector='editorStateRef'  // 选择器
                 apiKey='官网上申请的key值'
-                initialValue={""}
+                initialValue={this.state.value}
                 init={{...editorObj}}  // 初始化配置
                 onEditorChange={this.handleEditorChange}
             />
