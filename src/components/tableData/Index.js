@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 // propTypes
 import PropTypes from 'prop-types';
 // antd
-import { message, Modal } from "antd";
+import { message, Modal, Row, Col } from "antd";
 // api
 import { TableList, TableDelete } from "@api/common";
 // url
@@ -132,14 +132,21 @@ class TableComponent extends Component {
         })
     }
     render(){
-        const { thead, checkbox, rowkey, formItem } = this.props.config;
+        const { thead, checkbox, rowkey, formItem, formSearchCol, formRightCol } = this.props.config;
         const rowSelection = {
             onChange: this.onCheckebox
         }
         return (
             <Fragment>
                 {/* 筛选 */}
-                <FormSearch formItem={formItem} search={this.search} />
+                <Row>
+                    <Col span={formSearchCol || 20}><FormSearch formItem={formItem} search={this.search} /></Col>
+                    <Col span={formRightCol || 4}>
+                        <div className="pull-right">
+                            {this.props.children}
+                        </div>
+                    </Col>
+                </Row>
                 {/* table UI 组件 */}
                 <div className="table-wrap">
                     <TableBasis 
