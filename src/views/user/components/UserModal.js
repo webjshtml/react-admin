@@ -1,10 +1,14 @@
 import React, { Component } from "react";
 // ant
-import { Modal } from "antd";
+import { Modal, message } from "antd";
+// API
+import { UserAdd } from "@/api/user";
 // 组件
 import FormCom from "@c/form/Index";
 // 检验
-import { validate_phone } from "@/utils/validate";
+import { validate_phone, validate_pass } from "@/utils/validate";
+// 加密
+import CryptoJs from 'crypto-js';
 class UserModal extends Component {
     constructor(props){
         super(props);
@@ -40,7 +44,17 @@ class UserModal extends Component {
                     name: "password", 
                     required: true, 
                     style: { width: "200px" },
-                    placeholder: "请输入密码"
+                    placeholder: "请输入密码",
+                    rules: [
+                        () => ({
+                            validator(rule, value) {
+                                if (validate_pass(value)) {
+                                    return Promise.resolve();
+                                }
+                                return Promise.reject('密码不正确格式有误');
+                            },
+                        })
+                    ]
                 },
                 { 
                     type: "Input",
@@ -48,7 +62,20 @@ class UserModal extends Component {
                     name: "passwords", 
                     required: true, 
                     style: { width: "200px" },
-                    placeholder: "请再次输入密码"
+                    placeholder: "请再次输入密码",
+                    rules: [
+                        ({getFieldValue}) => ({
+                            validator(rule, value) {
+                                if(!validate_pass(value)) {
+                                    return Promise.reject('密码不正确格式有误');
+                                }
+                                if (getFieldValue('password') !== value) {
+                                    return Promise.reject('两次密码不相同');
+                                }
+                                return Promise.resolve();
+                            },
+                        })
+                    ]
                 },
                 { 
                     type: "Input",
@@ -67,11 +94,7 @@ class UserModal extends Component {
                     rules: [
                         () => ({
                             validator(rule, value) {
-                                // 验证手机号
-                                // let regPhone = /^1[3456789]\d{9}$/;  // 1 3 713746864  ^首位字符是什么，$结束字符是什么  \d代表数字  11位手机号
-                                if (validate_phone(value)) {
-                                    return Promise.resolve();
-                                }
+                                if (validate_phone(value)) { return Promise.resolve(); }
                                 return Promise.reject('手机号格式有误');
                             },
                         })
@@ -95,6 +118,10 @@ class UserModal extends Component {
         this.props.onRef(this);
     }
 
+    onFormRef = (ref) => {
+        this.child = ref;
+    }
+   
     visibleModal = (status) => {
         this.setState({
             isModalVisible: status
@@ -102,16 +129,34 @@ class UserModal extends Component {
     }
 
     handleOk = () => {
-
+        
     }
+
     handleCancel = () => {
+        // 清单表单
+        this.child.onReset();
         this.visibleModal(false);
     }
 
+    submit = (value) => {
+        const requestData = value;
+        requestData.password = CryptoJs.MD5(value.password).toString();
+        delete requestData.passwords;
+        UserAdd(requestData).then(response => {
+            const responseData = response.data;
+            // 提示
+            message.info(responseData.message);
+            // 关闭弹准备
+            this.handleCancel(false);
+        })
+    }
+
+    
+
     render(){
         return (
-            <Modal title="新增用户" visible={this.state.isModalVisible} onOk={this.handleOk} onCancel={this.handleCancel}>
-                <FormCom formItem={this.state.formItem} formLayout={this.state.formLayout} formConfig={this.state.formConfig} submitButton={false}></FormCom>
+            <Modal title="新增用户" visible={this.state.isModalVisible} footer={null} onCancel={this.handleCancel}>
+                <FormCom onRef={this.onFormRef} formItem={this.state.formItem} formLayout={this.state.formLayout} formConfig={this.state.formConfig} submit={this.submit}></FormCom>
             </Modal>
         )
     }

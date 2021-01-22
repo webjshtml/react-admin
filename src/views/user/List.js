@@ -26,24 +26,19 @@ class StaffList extends Component {
                 checkbox: true,
                 thead: [
                     { 
-                        title: "姓名", 
-                        dataIndex: "full_name", 
-                        key: "full_name"
+                        title: "用户名", 
+                        dataIndex: "username", 
+                        key: "username"
                     },
                     { 
-                        title: "职位名称", 
-                        dataIndex: "jobName", 
-                        key: "jobName"
+                        title: "真实姓名", 
+                        dataIndex: "truename", 
+                        key: "truename"
                     },
                     { 
-                        title: "部门名称", 
-                        dataIndex: "name", 
-                        key: "name"
-                    },
-                    { 
-                        title: "入职日期", 
-                        dataIndex: "job_entry_date", 
-                        key: "job_entry_date"
+                        title: "手机号", 
+                        dataIndex: "phone", 
+                        key: "phone"
                     },
                     { 
                         title: "禁启用", 
