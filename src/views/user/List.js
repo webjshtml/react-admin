@@ -1,6 +1,4 @@
 import React, { Component, Fragment } from "react";
-// 
-import { Link } from "react-router-dom";
 // antd
 import { Button, Switch, message } from "antd";
 // api
@@ -49,6 +47,11 @@ class StaffList extends Component {
                         }
                     },
                     { 
+                        title: "权限", 
+                        dataIndex: "role_str", 
+                        key: "role_str"
+                    },
+                    { 
                         title: "操作", 
                         dataIndex: "operation", 
                         key: "operation", 
@@ -56,10 +59,8 @@ class StaffList extends Component {
                         render: (text, rowData) => {
                             return (
                                 <div className="inline-button">
-                                    <Button type="primary">
-                                        <Link to={{ pathname: '/index/staff/add', state:{ id: rowData.staff_id}}}>编辑</Link>
-                                    </Button>
-                                    <Button onClick={() => this.delete(rowData.staff_id)}>删除</Button>
+                                    <Button type="primary" onClick={() => this.userModal({status: true, user_id: rowData.id})}>编辑</Button>
+                                    <Button onClick={() => this.delete(rowData.id)}>删除</Button>
                                     {/* 
                                         在父组件获取子组件的实例
                                         1、在子组件调用父组件方法，并把子组件实例传回给父组件，（已经存储了子组件的实例）
@@ -103,19 +104,19 @@ class StaffList extends Component {
     // 获取弹窗子组件实例
     getUserModalRef = (ref) => { this.child = ref }
     // 显示弹窗
-    userModal = () => {
-        this.child.visibleModal(true);
+    userModal = (data) => {
+        this.child.visibleModal(data);
     }
     
     /** 禁启用 */
     onHandlerSwitch(data){
         if(this.state.flag) { return false; }
         const requestData = {
-            id: data.staff_id,
+            id: data.id,
             status: !data.status
         }
         // 第一种做法，用组件本身异步
-        this.setState({id: data.staff_id}) 
+        this.setState({id: data.id}) 
         // 第二种做法，自己做的开关
         // this.setState({flag: true}) 
         Status(requestData).then(response => {
@@ -135,7 +136,7 @@ class StaffList extends Component {
         return (
             <Fragment>
                 <TableComponent onRef={this.getChildRef} batchButton={true} config={this.state.tableConfig}>
-                    <Button type="primary" ref="userAdd" onClick={this.userModal}>新增用户</Button>
+                    <Button type="primary" ref="userAdd" onClick={() => this.userModal({ status: true })}>新增用户</Button>
                 </TableComponent>
                 <UserModal onRef={this.getUserModalRef} />
             </Fragment>
