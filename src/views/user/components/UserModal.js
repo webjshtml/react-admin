@@ -2,7 +2,7 @@ import React, { Component } from "react";
 // ant
 import { Modal, message } from "antd";
 // API
-import { UserAdd } from "@/api/user";
+import { UserAdd, UserDetailed } from "@/api/user";
 // 组件
 import FormCom from "@c/form/Index";
 // 检验
@@ -14,6 +14,30 @@ class UserModal extends Component {
         super(props);
         this.state = {
             isModalVisible: false,
+            user_id: "",
+            password_rules: [
+                () => ({
+                    validator(rule, value) {
+                        if (validate_pass(value)) {
+                            return Promise.resolve();
+                        }
+                        return Promise.reject('密码不正确格式有误');
+                    },
+                })
+            ],
+            passwords_rules: [
+                ({getFieldValue}) => ({
+                    validator(rule, value) {
+                        if(!validate_pass(value)) {
+                            return Promise.reject('密码不正确格式有误');
+                        }
+                        if (getFieldValue('password') !== value) {
+                            return Promise.reject('两次密码不相同');
+                        }
+                        return Promise.resolve();
+                    },
+                })
+            ],
             formConfig: {
                 url: "jobAdd",
                 editKey: "",
@@ -40,42 +64,25 @@ class UserModal extends Component {
                 },
                 { 
                     type: "Input",
+                    value_type: "password",
                     label: "密码", 
                     name: "password", 
-                    required: true, 
+                    upload_field: true,
+                    required: false, 
                     style: { width: "200px" },
                     placeholder: "请输入密码",
-                    rules: [
-                        () => ({
-                            validator(rule, value) {
-                                if (validate_pass(value)) {
-                                    return Promise.resolve();
-                                }
-                                return Promise.reject('密码不正确格式有误');
-                            },
-                        })
-                    ]
+                    rules: ""
                 },
                 { 
                     type: "Input",
+                    value_type: "password",
                     label: "确认密码", 
                     name: "passwords", 
-                    required: true, 
+                    upload_field: true,
+                    required: false, 
                     style: { width: "200px" },
                     placeholder: "请再次输入密码",
-                    rules: [
-                        ({getFieldValue}) => ({
-                            validator(rule, value) {
-                                if(!validate_pass(value)) {
-                                    return Promise.reject('密码不正确格式有误');
-                                }
-                                if (getFieldValue('password') !== value) {
-                                    return Promise.reject('两次密码不相同');
-                                }
-                                return Promise.resolve();
-                            },
-                        })
-                    ]
+                    rules: ""
                 },
                 { 
                     type: "Input",
@@ -121,10 +128,52 @@ class UserModal extends Component {
     onFormRef = (ref) => {
         this.child = ref;
     }
-   
-    visibleModal = (status) => {
+
+    /** 修改数组对象 */
+    updateArrayItem = (index, key) => {
         this.setState({
-            isModalVisible: status
+            formItem: this.state.formItem.map((item, _index) => index.includes(_index)  ? {...item, ...key[_index]} : item)
+        })
+    }
+
+    updateItem = (id) => {
+        this.updateArrayItem(
+            [1, 2], 
+            {
+                1: {
+                    required: id ? false : true,
+                    rules: id ? "" : this.state.password_rules
+                },
+                2: {
+                    required: id ? false : true,
+                    rules: id ? "" : this.state.passwords_rules
+                }
+            }
+        );
+    }
+   
+
+    /** 弹窗 */
+    visibleModal = (params) => {
+        this.setState({
+            isModalVisible: params.status,
+            user_id: params.user_id
+        }, () => {
+            this.getDetailed();
+            this.updateItem(params.user_id);
+            console.log(this.state)
+        })
+    }
+
+    /** 用户详情 */
+    getDetailed = () => {
+        if(!this.state.user_id) { return false; }
+        UserDetailed({id: this.state.user_id}).then(response => {
+            this.setState({
+                formConfig: {
+                    setFieldValue: response.data.data
+                }
+            })
         })
     }
 

@@ -68,8 +68,8 @@ class FormCom extends Component {
     inputElem = (item) => {
         const rules = this.rules(item);
         return (
-            <Form.Item label={item.label} name={item.name} key={item.name} rules={rules}>
-                <Input style={item.style} placeholder={item.placeholder}/>
+            <Form.Item label={item.label} name={item.name} key={item.name} rules={rules} shouldUpdate={ item.upload_field || false}>
+                <Input type={item.value_type || "text"} style={item.style} placeholder={item.placeholder}/>
             </Form.Item>
         )
     }
