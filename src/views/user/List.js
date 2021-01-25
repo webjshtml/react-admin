@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 // antd
 import { Button, Switch, message } from "antd";
 // api
-import { Status } from "@api/staff";
+import { Status } from "@api/user";
 // table 组件
 import TableComponent from "@c/tableData/Index";
 import UserModal from "./components/UserModal";

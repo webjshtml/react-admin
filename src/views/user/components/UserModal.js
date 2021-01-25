@@ -2,7 +2,7 @@ import React, { Component } from "react";
 // ant
 import { Modal, message } from "antd";
 // API
-import { UserAdd, UserDetailed } from "@/api/user";
+import { UserAdd, UserDetailed, UserEdit } from "@/api/user";
 // 组件
 import FormCom from "@c/form/Index";
 // 检验
@@ -12,12 +12,16 @@ import CryptoJs from 'crypto-js';
 class UserModal extends Component {
     constructor(props){
         super(props);
+        const _this = this;
         this.state = {
             isModalVisible: false,
             user_id: "",
             password_rules: [
-                () => ({
+                ({getFieldValue}) => ({
                     validator(rule, value) {
+                        if(_this.state.user_id && !value && !getFieldValue("passwords")) {
+                            return Promise.resolve();
+                        }
                         if (validate_pass(value)) {
                             return Promise.resolve();
                         }
@@ -28,6 +32,10 @@ class UserModal extends Component {
             passwords_rules: [
                 ({getFieldValue}) => ({
                     validator(rule, value) {
+                        // 编辑状态并且当前的值为空时，直接通过
+                        if(_this.state.user_id && !value && !getFieldValue("password")) {
+                            return Promise.resolve();
+                        }
                         if(!validate_pass(value)) {
                             return Promise.reject('密码不正确格式有误');
                         }
@@ -68,10 +76,11 @@ class UserModal extends Component {
                     label: "密码", 
                     name: "password", 
                     upload_field: true,
-                    required: false, 
+                    trigger: ['onBlur'],
                     style: { width: "200px" },
                     placeholder: "请输入密码",
-                    rules: ""
+                    rules: "",
+                    blurEvent: true
                 },
                 { 
                     type: "Input",
@@ -79,10 +88,11 @@ class UserModal extends Component {
                     label: "确认密码", 
                     name: "passwords", 
                     upload_field: true,
-                    required: false, 
+                    trigger: ['onBlur'],
                     style: { width: "200px" },
                     placeholder: "请再次输入密码",
-                    rules: ""
+                    rules: "",
+                    blurEvent: true
                 },
                 { 
                     type: "Input",
@@ -140,14 +150,8 @@ class UserModal extends Component {
         this.updateArrayItem(
             [1, 2], 
             {
-                1: {
-                    required: id ? false : true,
-                    rules: id ? "" : this.state.password_rules
-                },
-                2: {
-                    required: id ? false : true,
-                    rules: id ? "" : this.state.passwords_rules
-                }
+                1: { rules: id ? "" : this.state.password_rules },
+                2: { rules: id ? "" : this.state.passwords_rules }
             }
         );
     }
@@ -177,8 +181,18 @@ class UserModal extends Component {
         })
     }
 
-    handleOk = () => {
-        
+    onBlurEvent = (e) => {
+        const value = e.currentTarget.value;
+        if(value) {
+            this.updateItem(value ? false : true);
+            return false;
+        }
+        if(e.currentTarget.id === "password" && this.state.user_id) {
+            this.updateArrayItem([1], { 1: { rules: "" } });
+        }
+        if(e.currentTarget.id === "passwords" && this.state.user_id) {
+            this.updateArrayItem([2], { 2: { rules: "" } });
+        }
     }
 
     handleCancel = () => {
@@ -188,10 +202,28 @@ class UserModal extends Component {
     }
 
     submit = (value) => {
+        this.state.user_id ? this.handlerFormEdit(value) : this.handlerFormAdd(value);
+        
+    }
+
+    handlerFormAdd= (value) => {
         const requestData = value;
         requestData.password = CryptoJs.MD5(value.password).toString();
         delete requestData.passwords;
         UserAdd(requestData).then(response => {
+            const responseData = response.data;
+            // 提示
+            message.info(responseData.message);
+            // 关闭弹准备
+            this.handleCancel(false);
+        })
+    }
+    handlerFormEdit= (value) => {
+        const requestData = value;
+        requestData.id = this.state.user_id;
+        if(requestData.password) { requestData.password = CryptoJs.MD5(value.password).toString(); }
+        delete requestData.passwords;
+        UserEdit(requestData).then(response => {
             const responseData = response.data;
             // 提示
             message.info(responseData.message);
@@ -205,7 +237,7 @@ class UserModal extends Component {
     render(){
         return (
             <Modal title="新增用户" visible={this.state.isModalVisible} footer={null} onCancel={this.handleCancel}>
-                <FormCom onRef={this.onFormRef} formItem={this.state.formItem} formLayout={this.state.formLayout} formConfig={this.state.formConfig} submit={this.submit}></FormCom>
+                <FormCom onRef={this.onFormRef} onBlur={this.onBlurEvent} formItem={this.state.formItem} formLayout={this.state.formLayout} formConfig={this.state.formConfig} submit={this.submit}></FormCom>
             </Modal>
         )
     }

@@ -21,3 +21,25 @@ export function UserDetailed(data){
         data,
     })
 }
+
+/**
+ * 编辑
+ */
+export function UserEdit(data){
+    return service.request({
+        url: "/user/edit/",
+        method: "post",
+        data,
+    })
+}
+
+/**
+ * 禁启用状态
+ */
+export function Status(data){
+    return service.request({
+        url: "/user/status/",
+        method: "post",
+        data,
+    })
+}
