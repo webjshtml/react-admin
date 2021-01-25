@@ -1,4 +1,4 @@
-import { setTokenKey, setUsernameKey } from "../Type";
+import { setTokenKey, setUsernameKey, logout } from "../Type";
 import { getToken, getUsername } from "@/utils/cookies"
 // 全局配置
 const app = {
@@ -21,6 +21,14 @@ const configReducer = function(state = app, action) {
             return {
                 ...state,
                 username: action.value,
+            }
+        }
+        // username
+        case logout: {
+            return {
+                ...state,
+                token: action.value,
+                username: action.value
             }
         }
         default:

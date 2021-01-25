@@ -79,8 +79,7 @@ class UserModal extends Component {
                     trigger: ['onBlur'],
                     style: { width: "200px" },
                     placeholder: "请输入密码",
-                    rules: "",
-                    blurEvent: true
+                    rules: ""
                 },
                 { 
                     type: "Input",
@@ -91,8 +90,7 @@ class UserModal extends Component {
                     trigger: ['onBlur'],
                     style: { width: "200px" },
                     placeholder: "请再次输入密码",
-                    rules: "",
-                    blurEvent: true
+                    rules: ""
                 },
                 { 
                     type: "Input",
@@ -187,12 +185,6 @@ class UserModal extends Component {
             this.updateItem(value ? false : true);
             return false;
         }
-        if(e.currentTarget.id === "password" && this.state.user_id) {
-            this.updateArrayItem([1], { 1: { rules: "" } });
-        }
-        if(e.currentTarget.id === "passwords" && this.state.user_id) {
-            this.updateArrayItem([2], { 2: { rules: "" } });
-        }
     }
 
     handleCancel = () => {
@@ -219,10 +211,35 @@ class UserModal extends Component {
         })
     }
     handlerFormEdit= (value) => {
+        // 密码
+        const password = value.password;
+        const passwords = value.passwords;
+        if(password) {
+            if(!validate_pass(password)) {
+                message.info("请输入6~20位的英文+数字的密码");
+                return false;
+            }
+        }
+        if(passwords) {
+            if(!validate_pass(passwords)) {
+                message.info("请输入6~20位的英文+数字的确认密码");
+                return false;
+            }
+        }
+        if((password && passwords) || (password && !passwords) || (!password && passwords)){
+            if(password !== passwords) {
+                message.info("两次密码不致");
+                return false;
+            }
+        }
+
         const requestData = value;
         requestData.id = this.state.user_id;
-        if(requestData.password) { requestData.password = CryptoJs.MD5(value.password).toString(); }
-        delete requestData.passwords;
+        if(password) {
+            requestData.password = CryptoJs.MD5(value.password).toString();
+            delete requestData.passwords;
+        }
+        
         UserEdit(requestData).then(response => {
             const responseData = response.data;
             // 提示

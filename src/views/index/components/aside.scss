@@ -29,12 +29,17 @@
     }
 }
 .header-wrap {
-    margin-left: 220px;
+    display: flex;
+    padding: 0 20px;
     -webkit-transition: all .2s ease 0s;
     -moz-transition: all .2s ease 0s;
     -ms-transition: all .2s ease 0s;
     -o-transition: all .2s ease 0s;
     transition: all .2s ease 0s;
+    .col-left, .col-right { flex: 1; }
+    .wrap {
+        width: 100%;
+    }
 }
 .collapsed-icon {
     font-size: 24px;

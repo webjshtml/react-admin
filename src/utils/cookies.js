@@ -18,3 +18,11 @@ export function setUsername(value){
 export function getUsername(){
     return cookies.load(user);
 }
+
+// 清除
+export function removeToken(){
+    cookies.remove(token, { path: '/' });
+}
+export function removeUsername(){
+    cookies.remove(user, { path: '/' });
+}

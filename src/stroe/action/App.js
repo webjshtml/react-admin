@@ -1,6 +1,6 @@
-import { setTokenKey, setUsernameKey } from "../Type";
+import { setTokenKey, setUsernameKey, logout } from "../Type";
 // 方法
-import { setToken, setUsername } from "@/utils/cookies"
+import { setToken, setUsername, removeToken, removeUsername } from "@/utils/cookies"
 export function setTokenAction(data){
     setToken(data);
     return {
@@ -14,5 +14,14 @@ export function setUsernameAction(data){
     return {
         type: setUsernameKey,
         value: data
+    }
+}
+
+export function logoutAction(){
+    removeToken();
+    removeUsername();
+    return {
+        type: logout,
+        value: ""
     }
 }
