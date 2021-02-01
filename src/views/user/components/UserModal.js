@@ -10,7 +10,6 @@ import FormCom from "@c/form/Index";
 import { validate_phone, validate_pass } from "@/utils/validate";
 // 加密
 import CryptoJs from 'crypto-js';
-import { getRoles } from "@testing-library/react";
 class UserModal extends Component {
     constructor(props){
         super(props);

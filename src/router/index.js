@@ -2,18 +2,21 @@ const router = [
     {
       title: '控制台',
       icon: 'laptop',
-      key: '/index'
+      key: '/index',
+      role: ["user", "information", "product"]
     },
     {
       title: '用户管理',
       icon: 'laptop',
       key: '/index/user',
+      role: ["information", "user"],
       child: [
-        {key: '/index/user/list', title: '用户列表', icon: '',},
+        {key: '/index/user/list', title: '用户列表', icon: '', role: ["user"]},
         {
           key: '/index/user/add', 
           title: '添加用户', 
-          icon: ''
+          icon: '',
+          role: ["user"]
         }
       ]
     },
@@ -21,15 +24,17 @@ const router = [
       title: '部门管理',
       icon: 'bars',
       key: '/index/department',
+      role: ["user"],
       child: [
-        {key: '/index/department/list', title: '部门列表', icon: ''},
-        {key: '/index/department/add', title: '添加部门', icon: ''},
+        {key: '/index/department/list', title: '部门列表', icon: '', role: ["user"] },
+        {key: '/index/department/add', title: '添加部门', icon: '', role: ["user"] },
       ]
     },
     {
       title: '职位管理',
       icon: 'edit',
       key: '/index/job',
+      role: ["user"],
       child: [
         {key: '/index/job/list', title: '职位列表', icon: ''},
         {key: '/index/job/add', title: '添加职位', icon: ''}

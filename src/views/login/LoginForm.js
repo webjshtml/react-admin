@@ -50,6 +50,8 @@ class LoginForm extends Component{
             // 存储token
             setToken(data.token);
             setUsername(data.username);
+            // 存储用户角色 
+            sessionStorage.setItem("role", data.role);
             // 路由跳转
             this.props.history.push('/index');
         }).catch(error => {  // reject

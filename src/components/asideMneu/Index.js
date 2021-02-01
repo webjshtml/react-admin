@@ -12,11 +12,39 @@ class AsideMenu extends Component {
     constructor(props){
         super(props);
         this.state = {
+            router: [],
             selectedKeys: [],
             openKeys: []
         };
     }
-
+    // 组件挂载完成之前
+    UNSAFE_componentWillMount(){
+        const role = sessionStorage.getItem("role").split(",");
+        // 存储路由
+        let routerArray = [];
+        routerArray = Router.filter((item) => {
+            // 第一层
+            if(this.hasPermission(role, item)) {
+                if(item.child && item.child.length > 0) {
+                    item.child = item.child.filter((child) => {
+                        if(this.hasPermission(role, child)) {
+                            return child;
+                        }
+                    })
+                    return item;
+                }
+                return item;
+            }
+        })
+        this.setState({
+            router: routerArray
+        })
+    }
+    hasPermission = (role, router) => {
+        if(router.role && router.role.length > 0) {
+            return role.some(elem => router.role.indexOf(elem) >= 0);
+        }
+    }
     // 生命周期，在这里多了一层接口请求，并过滤路由
     componentDidMount(){
         const pathname = this.props.location.pathname;
@@ -26,8 +54,8 @@ class AsideMenu extends Component {
             openKeys: menuKey
         }
         this.selectMenuHigh(menuHigh);
-       
     }
+
     /** 选择菜单  */
     selectMenu = ({ item, key, keyPath, domEvent }) => {
         const menuHigh = {
@@ -74,7 +102,7 @@ class AsideMenu extends Component {
     }
 
     render(){
-        const { selectedKeys, openKeys } = this.state;
+        const { selectedKeys, openKeys, router } = this.state;
         return (
             <Fragment>
                 <Menu
@@ -87,7 +115,7 @@ class AsideMenu extends Component {
                 style={{ height: '100%', borderRight: 0 }}
                 >
                     {
-                        Router && Router.map(firstItem => {
+                        router && router.map(firstItem => {
                             return firstItem.child && firstItem.child.length > 0 ? this.renderSubMenu(firstItem) : this.renderMenu(firstItem);
                         })
                     }
