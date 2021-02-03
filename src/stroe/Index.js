@@ -1,4 +1,8 @@
-import { createStore, combineReducers } from "redux";
+import { createStore, combineReducers, applyMiddleware } from "redux";
+// redux-thunx
+import thunx from "redux-thunk";
+// redux-dev
+import { composeWithDevTools } from 'redux-devtools-extension';
 // Reducer
 import department from "./reducer/Department";
 import job from "./reducer/Job";
@@ -10,6 +14,6 @@ const allReducer = { department, job, config, app }
 const rootReducer = combineReducers(allReducer);
 
 // 创建 Store 实例
-const store = createStore(rootReducer);  // 注入
+const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunx)));  // 注入
 
 export default store;

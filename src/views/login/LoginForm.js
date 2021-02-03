@@ -17,7 +17,7 @@ import { setToken, setUsername } from "../../utils/cookies"
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 //action
-import { setTokenAction, setUsernameAction } from "@/stroe/action/App";
+import { setTokenAction, setUsernameAction, accountLoginAction } from "@/stroe/action/App";
 class LoginForm extends Component{
     constructor(){
         super();
@@ -39,27 +39,30 @@ class LoginForm extends Component{
         this.setState({
             loading: true
         })
-        Login(requestData).then(response => {  // resolves
-            this.setState({
-                loading: false
-            })
-            const data = response.data.data
-            // actions
-            this.props.actions.setToken(data.token);
-            this.props.actions.setUsername(data.username);
-            // 存储token
-            setToken(data.token);
-            setUsername(data.username);
-            // 存储用户角色 
-            sessionStorage.setItem("role", data.role);
-            // 路由跳转
+        this.props.actions.handlerLogin(requestData).then(response => {
             this.props.history.push('/index');
-        }).catch(error => {  // reject
-            this.setState({
-                loading: false
-            })
         })
-        console.log('Received values of form: ', values);
+        // Login(requestData).then(response => {  // resolves
+        //     this.setState({
+        //         loading: false
+        //     })
+        //     const data = response.data.data
+        //     // actions
+        //     this.props.actions.setToken(data.token);
+        //     this.props.actions.setUsername(data.username);
+        //     // 存储token
+        //     setToken(data.token);
+        //     setUsername(data.username);
+        //     // 存储用户角色 
+        //     sessionStorage.setItem("role", data.role);
+        //     // 路由跳转
+        //     this.props.history.push('/index');
+        // }).catch(error => {  // reject
+        //     this.setState({
+        //         loading: false
+        //     })
+        // })
+        // console.log('Received values of form: ', values);
     };
     /** input输入处理 */
     inputChangeUsername = (e) => {
@@ -145,7 +148,8 @@ const mapDispatchToProps = (dispatch) => {
     return {
         actions: bindActionCreators({
             setToken: setTokenAction,
-            setUsername: setUsernameAction
+            setUsername: setUsernameAction,
+            handlerLogin: accountLoginAction
         }, dispatch)
 
     }
