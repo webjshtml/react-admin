@@ -5,14 +5,10 @@ import { Form, Input, Button, Row, Col } from 'antd';
 import { UserOutlined, UnlockOutlined  } from '@ant-design/icons';
 // 验证
 import { validate_password } from "../../utils/validate";
-// API
-import { Login } from "../../api/account";
 // 组件
 import Code from "../../components/code/index";
 // 加密
 import CryptoJs from 'crypto-js';
-// 方法
-import { setToken, setUsername } from "../../utils/cookies"
 // connect
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -41,6 +37,12 @@ class LoginForm extends Component{
         })
         this.props.actions.handlerLogin(requestData).then(response => {
             this.props.history.push('/index');
+            // 先调用登录接口 => 调用获取角色接口
+            // this.props.actions.headnlerUserRole().then(response => {
+            //     this.props.history.push('/index');
+            // })
+        }).catch(error => {
+            console.log(2222)
         })
         // Login(requestData).then(response => {  // resolves
         //     this.setState({

@@ -6,6 +6,10 @@ import { UserOutlined } from '@ant-design/icons';
 import { Menu } from "antd";
 // connect
 import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+// action
+//action
+import { getUserRoleAction } from "@/stroe/action/App";
 const { SubMenu } = Menu;
 
 class AsideMenu extends Component {
@@ -15,6 +19,10 @@ class AsideMenu extends Component {
             selectedKeys: [],
             openKeys: []
         };
+    }
+
+    UNSAFE_componentWillMount(){
+        this.props.actions.headnlerUserRole();
     }
     
     // 生命周期，在这里多了一层接口请求，并过滤路由
@@ -102,8 +110,16 @@ const mapStateToProps = (state) => ({
     routers: state.app.rotuers
 })
 
+const mapDispatchToProps = (dispatch) => {
+    return {
+        actions: bindActionCreators({
+            headnlerUserRole: getUserRoleAction
+        }, dispatch)
+
+    }
+}
 export default connect(
     mapStateToProps,
-    null
+    mapDispatchToProps
 )(withRouter(AsideMenu));
 

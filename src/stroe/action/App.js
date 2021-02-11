@@ -1,10 +1,12 @@
-import { setTokenKey, setUsernameKey, logout, router } from "../Type";
+import { setTokenKey, setUsernameKey, logout, router, login } from "../Type";
 // 方法
 import { setToken, setUsername, removeToken, removeUsername } from "@/utils/cookies";
 // API
 import { Login } from "../../api/account";
+import { getUserRole } from "../../api/user";
 // 路由
 import Router from "../../router/index";
+
 export function setTokenAction(data){
     setToken(data);
     return {
@@ -46,7 +48,41 @@ export function hasPermission(role, router){
 
 // 登录逻辑
 export const accountLoginAction = (data) => dispatch => {
-    return Login(data).then(response => {
+    // return new Promise((resolve, reject) => {
+    //     Login(data).then(response => {
+    //         const data = response.data.data;
+    //         dispatch(setTokenAction(data.token));
+    //         dispatch(setUsernameAction(data.username));
+    //         reject();
+    //     }).catch(error => {
+    
+    //     })
+    // })
+    return dispatch({
+        type: login,
+        payload: new Promise((resolve, reject) => {
+            Login(data).then(response => {
+                const data = response.data.data;
+                dispatch(setTokenAction(data.token));
+                dispatch(setUsernameAction(data.username));
+                resolve();
+            }).catch(error => {
+        
+            })
+        })
+    })
+    // return Login(data).then(response => {
+    //     const data = response.data.data;
+    //     dispatch(setTokenAction(data.token));
+    //     dispatch(setUsernameAction(data.username));
+    // }).catch(error => {
+
+    // })
+}
+
+// 获取用户角色
+export const getUserRoleAction = () => dispatch => {
+    return getUserRole().then(response => {
         const data = response.data.data;
         // 角色 
         const role = data.role.split(",");
@@ -72,8 +108,6 @@ export const accountLoginAction = (data) => dispatch => {
                 return false;
             })
         }
-        dispatch(setTokenAction(data.token));
-        dispatch(setUsernameAction(data.username));
         dispatch(updateRouter(routerArray));
     }).catch(error => {
 

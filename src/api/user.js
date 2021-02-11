@@ -43,3 +43,14 @@ export function Status(data){
         data,
     })
 }
+
+/**
+ * 获取用户角色 
+ */
+export function getUserRole(data = {}){
+    return service.request({
+        url: "/user/role/",
+        method: "post",
+        data,
+    })
+}
