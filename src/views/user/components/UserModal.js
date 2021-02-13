@@ -6,10 +6,12 @@ import { UserAdd, UserDetailed, UserEdit } from "@/api/user";
 import { GetRoles } from "@/api/permission";
 // 组件
 import FormCom from "@c/form/Index";
+import CheckboxAll from "@c/checkboxAll/Index";
 // 检验
 import { validate_phone, validate_pass } from "@/utils/validate";
 // 加密
 import CryptoJs from 'crypto-js';
+
 class UserModal extends Component {
     constructor(props){
         super(props);
@@ -21,6 +23,29 @@ class UserModal extends Component {
             role_options: [],
             // 角色的值 
             role_value: [],
+            // 菜单模拟数据
+            role_menu: [
+                {
+                    // 一级
+                    label: "用户管理",
+                    value: "/user",
+                    // 子级
+                    child_item: [
+                        { label: "用户列表", value: "/user/list" },
+                        { label: "用户添加", value: "/user/add" }
+                    ]
+                },
+                {
+                    // 一级
+                    label: "部门管理",
+                    value: "/department",
+                    // 子级
+                    child_item: [
+                        { label: "部门列表", value: "/department/list" },
+                        { label: "部门添加", value: "/department/add" }
+                    ]
+                }
+            ],
             password_rules: [
                 ({getFieldValue}) => ({
                     validator(rule, value) {
@@ -136,6 +161,13 @@ class UserModal extends Component {
                     name: "role", 
                     required: true,
                     slotName: "role"
+                },
+                { 
+                    type: "Slot",
+                    label: "菜单权限", 
+                    name: "role_menu", 
+                    required: true,
+                    slotName: "role_menu"
                 }
             ]
         };
@@ -283,16 +315,26 @@ class UserModal extends Component {
 
     
 
+    
+
     render(){
         return (
             <Modal title="新增用户" visible={this.state.isModalVisible} footer={null} onCancel={this.handleCancel}>
                 <FormCom onRef={this.onFormRef} onBlur={this.onBlurEvent} formItem={this.state.formItem} formLayout={this.state.formLayout} formConfig={this.state.formConfig} submit={this.submit}>
                     <div ref="role">
-                    <Checkbox.Group
-                        options={this.state.role_options}
-                        value={this.state.role_value}
-                        onChange={this.onChangeRole}
-                    />
+                        <Checkbox.Group
+                            options={this.state.role_options}
+                            value={this.state.role_value}
+                            onChange={this.onChangeRole}
+                        />
+                    </div>
+                    <div ref="role_menu">
+                        {
+                            this.state.role_menu.map((item, index) => {
+                                return <CheckboxAll data={item} key={index} />
+                            })
+                        }
+                        
                     </div>
                 </FormCom>
             </Modal>
