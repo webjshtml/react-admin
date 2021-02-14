@@ -7,3 +7,4 @@ export const setUsernameKey =  "SET_USERNAME";
 export const logout =  "LOGOUT_REMOVE";
 export const router =  "UPDATE_ROUTER";
 export const login =  "HANDLER_LOGIN";
+export const roelMenu = "ROLE_MENU";

@@ -1,6 +1,12 @@
 import React, { Component, Fragment } from "react";
+import { withRouter } from 'react-router-dom';
 // propTypes
 import PropTypes from 'prop-types';
+// connect
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+// action
+import { roleMenuAction } from "@/stroe/action/App";
 // antd
 import { Checkbox } from "antd";
 const CheckboxGroup = Checkbox.Group;
@@ -28,6 +34,13 @@ class CheckboxAll extends Component {
         })
     }
 
+    updateStateCheckedList = (data) => {
+        this.setState({
+            ...data
+        }, () => {
+            this.updateRoleMenu();
+        })
+    }
     // 单个选项
     onChange = (value) => {
         const { checked_length } = this.state;  // 默认值 
@@ -46,9 +59,9 @@ class CheckboxAll extends Component {
             this.checkAllStatus(false);
         }
         
-        this.setState({
+        this.updateStateCheckedList({
             checked_list: value
-        })
+        });
     }
 
     // 部分选择的状态
@@ -64,11 +77,62 @@ class CheckboxAll extends Component {
     onCheckAllChange = (e) => {
         const checked = e.target.checked;
         // 全选、返选
-        this.setState({
+        this.updateStateCheckedList({
             checked_list: checked ? this.state.checked_default : []
         })
+
         this.checkAllStatus(checked);
         this.indeterminateStatus(false);
+    }
+
+    /** 
+     * 明确最终要作什么东西
+     * 1、明确我们开发的东西是什么（复选框组件）
+     * 
+     * 2、统一数据格式
+     * {
+     *      user: [
+     *          { labeh: "", value: ""},
+     *          { labeh: "", value: ""},
+     *      ]
+     *      dep: ["add", "list"]
+     * }
+     * 
+     * Object.keys()
+     * 
+     * user: {
+     *      "/user/list" : {
+     *          label: "用户列表",
+     *          value: "/user/list"
+     *      }
+     * }
+     * 
+     * 
+     **/
+    updateRoleMenu = () => {
+        // checked_list
+        const checked = this.state.checked_list;
+        // 第一层
+        const first = this.props.data;
+        // store
+        let StoreChecked = this.props.menu;  // {}
+        // 判断是否存在对象
+        if(!StoreChecked[first.value]) { StoreChecked[first.value] = {}; }
+        // 存储数据
+        if(checked.length > 0) {
+
+        }
+        // 删除数据
+        if(checked.length === 0) {
+            delete StoreChecked[first.value];
+        }
+
+        console.log(StoreChecked)
+
+        let data = null;
+
+        this.props.actions.roleMenu(data);
+        //
     }
    
     render(){
@@ -97,4 +161,20 @@ CheckboxAll.propTypes = {
 CheckboxAll.defaultProps = {
     data: {}
 }
-export default CheckboxAll;
+
+const mapStateToProps = (state) => ({
+    menu: state.app.role_menu
+})
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        actions: bindActionCreators({
+            roleMenu: roleMenuAction
+        }, dispatch)
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(withRouter(CheckboxAll));

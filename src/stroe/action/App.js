@@ -1,4 +1,4 @@
-import { setTokenKey, setUsernameKey, logout, router, login } from "../Type";
+import { setTokenKey, setUsernameKey, logout, router, login, roelMenu } from "../Type";
 // 方法
 import { setToken, setUsername, removeToken, removeUsername } from "@/utils/cookies";
 // API
@@ -112,4 +112,12 @@ export const getUserRoleAction = () => dispatch => {
     }).catch(error => {
 
     })
+}
+
+/** 菜单路由 action */
+export function roleMenuAction(data){
+    return {
+        type: roelMenu,
+        value: data
+    }
 }
