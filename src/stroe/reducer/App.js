@@ -1,11 +1,11 @@
-import { setTokenKey, setUsernameKey, logout, router, roelMenu } from "../Type";
+import { setTokenKey, setUsernameKey, logout, router, checkedAll } from "../Type";
 import { getToken, getUsername } from "@/utils/cookies"
 // 全局配置
 const app = {
     token: "" || getToken(),       // 登录后存储了 token 和 username
     username: "" || getUsername(),
     rotuers: [],
-    role_menu: {}
+    checked_all: {}
 }
 
 // config Reducer
@@ -41,10 +41,10 @@ const configReducer = function(state = app, action) {
             }
         }
         // roleMenu
-        case roelMenu: {
+        case checkedAll: {
             return {
                 ...state,
-                role_menu: action.value,
+                checked_all: action.value,
             }
         }
         default:

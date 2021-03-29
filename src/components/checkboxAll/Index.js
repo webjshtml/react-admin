@@ -34,6 +34,10 @@ class CheckboxAll extends Component {
         })
     }
 
+    componentWillUnmount(){
+        this.props.actions.roleMenu({});
+    }
+
     updateStateCheckedList = (data) => {
         this.setState({
             ...data
@@ -113,26 +117,33 @@ class CheckboxAll extends Component {
         // checked_list
         const checked = this.state.checked_list;
         // 第一层
-        const first = this.props.data;
+        const first = this.props.data;  // child_item
         // store
         let StoreChecked = this.props.menu;  // {}
         // 判断是否存在对象
         if(!StoreChecked[first.value]) { StoreChecked[first.value] = {}; }
         // 存储数据
         if(checked.length > 0) {
+            // 第一种：需要取文本
+            // 匹配
+            // const object = {};
+            // checked.forEach(item => {
+            //     let options = first.child_item.filter(child => child.value === item);  // 过滤的结果是数组，无论是否匹配成功都是数组
+            //     if(options.length > 0) {
+            //         object[item] = options[0];
+            //     }
+            // })
+            
+            // 第二种：不需要文本
+            // 更新
+            StoreChecked[first.value] = checked;
 
         }
         // 删除数据
         if(checked.length === 0) {
             delete StoreChecked[first.value];
         }
-
-        console.log(StoreChecked)
-
-        let data = null;
-
-        this.props.actions.roleMenu(data);
-        //
+        this.props.actions.roleMenu(StoreChecked);
     }
    
     render(){
@@ -163,7 +174,7 @@ CheckboxAll.defaultProps = {
 }
 
 const mapStateToProps = (state) => ({
-    menu: state.app.role_menu
+    menu: state.app.checked_all
 })
 
 const mapDispatchToProps = (dispatch) => {

@@ -11,7 +11,8 @@ import CheckboxAll from "@c/checkboxAll/Index";
 import { validate_phone, validate_pass } from "@/utils/validate";
 // 加密
 import CryptoJs from 'crypto-js';
-
+// connect
+import { connect } from "react-redux";
 class UserModal extends Component {
     constructor(props){
         super(props);
@@ -23,6 +24,8 @@ class UserModal extends Component {
             role_options: [],
             // 角色的值 
             role_value: [],
+            // 菜单权限的值
+            role_menu_value: [],
             // 菜单模拟数据
             role_menu: [
                 {
@@ -166,7 +169,6 @@ class UserModal extends Component {
                     type: "Slot",
                     label: "菜单权限", 
                     name: "role_menu", 
-                    required: true,
                     slotName: "role_menu"
                 }
             ]
@@ -207,10 +209,9 @@ class UserModal extends Component {
         }, () => {
             this.getDetailed();
             this.updateItem(params.user_id);
-            console.log(this.state)
         })
         // 获取
-        this.getRoles()
+        this.getRoles();
     }
 
     getRoles = () => {
@@ -250,8 +251,18 @@ class UserModal extends Component {
     }
 
     submit = (value) => {
+        this.formatMenuRole();
         this.state.user_id ? this.handlerFormEdit(value) : this.handlerFormAdd(value);
         
+    }
+
+    formatMenuRole = () => {
+        const menu = this.props.menu;
+        let arr = [];
+        for(let key in menu) {
+            arr = arr.concat(menu[key]);
+        }
+        this.setState({ role_menu_value: arr })
     }
 
     handlerFormAdd= (value) => {
@@ -293,6 +304,7 @@ class UserModal extends Component {
         requestData.id = this.state.user_id;
         // 权限
         requestData.role = this.state.role_value.join();  // ["user", "information"] => user,information
+        requestData.role_menu = this.state.role_menu_value.join();  // ["user", "information"] => user,information
         if(password) {
             requestData.password = CryptoJs.MD5(value.password).toString();
             delete requestData.passwords;
@@ -341,4 +353,13 @@ class UserModal extends Component {
         )
     }
 }
-export default UserModal;
+
+
+const mapStateToProps = (state) => ({
+    menu: state.app.checked_all
+})
+
+export default connect(
+    mapStateToProps,
+    null
+)(UserModal);
