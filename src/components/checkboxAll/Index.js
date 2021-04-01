@@ -34,62 +34,80 @@ class CheckboxAll extends Component {
         })
     }
 
+    UNSAFE_componentWillReceiveProps(nextProps){
+        this.checkboxInit(nextProps.init);
+
+    }
+
     componentWillUnmount(){
         this.props.actions.roleMenu({});
     }
 
-    updateStateCheckedList = (data) => {
+    // 初始化
+    checkboxInit = (data) => {
+        const check_list = data;
+        // 过滤值
+        const checked = check_list.filter(item => {
+            return item.indexOf(this.props.data.value) != -1;
+        })
+        // 初始值
         this.setState({
-            ...data
+            checked_list: checked
         }, () => {
-            this.updateRoleMenu();
+            // 全选状态
+            this.isCheckAll()
+        })
+    }
+    // 判断全选状态
+    isCheckAll = () => {
+        const { checked_length, checked_list } = this.state;  // 默认值 
+        // 部分选中
+        let indeterminate = false;
+        // 全部
+        let checkAll = false;
+       
+        if(checked_length !== checked_list.length){          // 部分选中
+            indeterminate = true;
+            checkAll = false;
+        }
+        // 全部
+        if(checked_length === checked_list.length) {         // 全部选中：1、打勾；2、部分选中清除
+            indeterminate = false;
+            checkAll = true;
+        }
+        // 都没有
+        if(checked_list.length === 0){
+            indeterminate = false;
+            checkAll = false;
+        }
+        // 更新选中的状态
+        this.setState({ 
+            indeterminate,
+            checkAll
         })
     }
     // 单个选项
     onChange = (value) => {
-        const { checked_length } = this.state;  // 默认值 
-        const length = value.length;            // 勾选的
-        
-        if(checked_length !== length){          // 部分选中
-            this.indeterminateStatus(true);
-            this.checkAllStatus(false);
-        }
-        if(checked_length === length) {         // 全部选中：1、打勾；2、部分选中清除
-            this.indeterminateStatus(false);
-            this.checkAllStatus(true);
-        }
-        if(length === 0){
-            this.indeterminateStatus(false);
-            this.checkAllStatus(false);
-        }
-        
-        this.updateStateCheckedList({
-            checked_list: value
-        });
+        this.updateStateCheckedList(value);
     }
-
-    // 部分选择的状态
-    indeterminateStatus = (value) => {
-        this.setState({ indeterminate: value })
-    }
-    // 全选按钮的状态
-    checkAllStatus = (value) => {
-        this.setState({ checkAll: value })
-    }
-
     // 全选、返选
     onCheckAllChange = (e) => {
         const checked = e.target.checked;
         // 全选、返选
-        this.updateStateCheckedList({
-            checked_list: checked ? this.state.checked_default : []
-        })
+        this.updateStateCheckedList(checked ? this.state.checked_default : [])
+    }
 
-        this.checkAllStatus(checked);
-        this.indeterminateStatus(false);
+    // 更新值
+    updateStateCheckedList = (data) => {
+        this.setState({
+            checked_list: data
+        }, () => {
+            this.isCheckAll();
+        })
     }
 
     /** 
+     * 
      * 明确最终要作什么东西
      * 1、明确我们开发的东西是什么（复选框组件）
      * 
@@ -110,6 +128,7 @@ class CheckboxAll extends Component {
      *          value: "/user/list"
      *      }
      * }
+     * 3、写函数，就是 funciton ，一个 funciton 只做一件事
      * 
      * 
      **/
@@ -167,14 +186,16 @@ class CheckboxAll extends Component {
 // 校验数据类型
 CheckboxAll.propTypes = {
     data: PropTypes.object,
+    init: PropTypes.array
 }
 // 默认
 CheckboxAll.defaultProps = {
-    data: {}
+    data: {},
+    init: []
 }
 
 const mapStateToProps = (state) => ({
-    menu: state.app.checked_all
+    menu: state.app.checked_all,
 })
 
 const mapDispatchToProps = (dispatch) => {
