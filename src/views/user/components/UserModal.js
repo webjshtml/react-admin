@@ -351,7 +351,7 @@ class UserModal extends Component {
                     <div ref="role_menu">
                         {
                             this.state.role_menu.map((item, index) => {
-                                return <CheckboxAll data={item} key={index} init={this.state.role_menu_init} />
+                                return <CheckboxAll data={item} key={index} init={this.state.role_menu_init} saveAllKey={true} />
                             })
                         }
                         

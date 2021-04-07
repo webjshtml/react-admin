@@ -8,8 +8,8 @@ const router = [
     {
       title: '用户管理',
       icon: 'laptop',
-      key: '/index/user',
-      role: ["information", "user"],
+      key: '/index/user',      // 菜单
+      role: ["information", "user"], // 角色 
       child: [
         {key: '/index/user/list', title: '用户列表', icon: '', role: ["user"]},
         {

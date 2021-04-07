@@ -24,6 +24,7 @@ class CheckboxAll extends Component {
     }
     componentDidMount(){
         const checked_list = this.props.data.child_item;
+        
         let checked_value = null;
         if(checked_list && checked_list.length > 0) {
             checked_value = checked_list.map(item => item.value);
@@ -36,7 +37,6 @@ class CheckboxAll extends Component {
 
     UNSAFE_componentWillReceiveProps(nextProps){
         this.checkboxInit(nextProps.init);
-
     }
 
     componentWillUnmount(){
@@ -55,7 +55,9 @@ class CheckboxAll extends Component {
             checked_list: checked
         }, () => {
             // 全选状态
-            this.isCheckAll()
+            this.isCheckAll();
+            // 写入 store
+            this.updateRoleMenu();
         })
     }
     // 判断全选状态
@@ -102,7 +104,10 @@ class CheckboxAll extends Component {
         this.setState({
             checked_list: data
         }, () => {
+            // 更新选中状态
             this.isCheckAll();
+            // 写入 store
+            this.updateRoleMenu();
         })
     }
 
@@ -155,7 +160,11 @@ class CheckboxAll extends Component {
             
             // 第二种：不需要文本
             // 更新
-            StoreChecked[first.value] = checked;
+            let checked_value = JSON.parse(JSON.stringify(checked));
+            if(this.props.saveAllKey) {
+                checked_value.unshift(first.value);
+            }
+            StoreChecked[first.value] = checked_value;
 
         }
         // 删除数据
@@ -186,12 +195,14 @@ class CheckboxAll extends Component {
 // 校验数据类型
 CheckboxAll.propTypes = {
     data: PropTypes.object,
-    init: PropTypes.array
+    init: PropTypes.array,
+    saveAllKey: PropTypes.bool
 }
 // 默认
 CheckboxAll.defaultProps = {
     data: {},
-    init: []
+    init: [],
+    saveAllKey: false
 }
 
 const mapStateToProps = (state) => ({

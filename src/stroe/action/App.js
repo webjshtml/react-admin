@@ -40,9 +40,15 @@ export function updateRouter(data){
 }
 
 // 路由权限判断
-export function hasPermission(role, router){
-    if(router.role && router.role.length > 0) {
-        return role.some(elem => router.role.indexOf(elem) >= 0);
+// export function hasPermission(role, router){
+//     if(router.role && router.role.length > 0) {
+//         return role.some(elem => router.role.indexOf(elem) >= 0);
+//     }
+// }
+export function hasPermission(menu, router){
+    const menus = menu.map(item => `/index${item}`);
+    if(router.key && router.key.length > 0) {
+        return menus.includes(router.key);
     }
 }
 
@@ -84,19 +90,19 @@ export const accountLoginAction = (data) => dispatch => {
 export const getUserRoleAction = () => dispatch => {
     return getUserRole().then(response => {
         const data = response.data.data;
-        // 角色 
-        const role = data.role.split(",");
+        // 菜单
+        const menu = data.menu && data.menu.split(",");
         // // 存储路由
         let routerArray = [];
-        if(role.includes("admin")) {
+        if(!menu) {
             routerArray = Router;
         }else{
             routerArray = Router.filter((item) => {
                 // 第一层
-                if(hasPermission(role, item)) {
+                if(hasPermission(menu, item)) {
                     if(item.child && item.child.length > 0) {
                         item.child = item.child.filter((child) => {
-                            if(hasPermission(role, child)) {
+                            if(hasPermission(menu, child)) {
                                 return child;
                             }
                             return false;
