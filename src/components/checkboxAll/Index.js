@@ -47,9 +47,14 @@ class CheckboxAll extends Component {
     checkboxInit = (data) => {
         const check_list = data;
         // 过滤值
-        const checked = check_list.filter(item => {
-            return item.indexOf(this.props.data.value) != -1;
-        })
+        let checked = [];
+        if(this.props.saveAllKey) {
+            checked = check_list.filter(item => {
+                return item.indexOf(this.props.data.value) != -1;
+            })
+        }else{
+            checked = check_list;
+        }
         // 初始值
         this.setState({
             checked_list: checked
@@ -67,18 +72,23 @@ class CheckboxAll extends Component {
         let indeterminate = false;
         // 全部
         let checkAll = false;
-       
-        if(checked_length !== checked_list.length){          // 部分选中
+        // 存在ALL选项时
+        let length = checked_list.length;
+        if(this.props.saveAllKey && checked_list.includes(this.props.data.value)) {
+            length--;
+        }
+        // 部分选中
+        if(checked_length !== length){          
             indeterminate = true;
             checkAll = false;
         }
         // 全部
-        if(checked_length === checked_list.length) {         // 全部选中：1、打勾；2、部分选中清除
+        if(checked_length === length) {         // 全部选中：1、打勾；2、部分选中清除
             indeterminate = false;
             checkAll = true;
         }
         // 都没有
-        if(checked_list.length === 0){
+        if(length === 0){
             indeterminate = false;
             checkAll = false;
         }
@@ -138,14 +148,16 @@ class CheckboxAll extends Component {
      * 
      **/
     updateRoleMenu = () => {
+        const checked_type = this.props.type;
         // checked_list
         const checked = this.state.checked_list;
         // 第一层
         const first = this.props.data;  // child_item
         // store
-        let StoreChecked = this.props.menu;  // {}
+        let StoreChecked = this.props.checked;  // checked_all: { menu: {} }
+        if(!StoreChecked[checked_type]) { StoreChecked[checked_type] = {}; }
         // 判断是否存在对象
-        if(!StoreChecked[first.value]) { StoreChecked[first.value] = {}; }
+        if(!StoreChecked[checked_type][first.value]) { StoreChecked[checked_type][first.value] = {}; }
         // 存储数据
         if(checked.length > 0) {
             // 第一种：需要取文本
@@ -161,15 +173,15 @@ class CheckboxAll extends Component {
             // 第二种：不需要文本
             // 更新
             let checked_value = JSON.parse(JSON.stringify(checked));
-            if(this.props.saveAllKey) {
+            if(this.props.saveAllKey && !checked_value.includes(this.props.data.value)) {
                 checked_value.unshift(first.value);
             }
-            StoreChecked[first.value] = checked_value;
+            StoreChecked[checked_type][first.value] = checked_value;
 
         }
         // 删除数据
         if(checked.length === 0) {
-            delete StoreChecked[first.value];
+            delete StoreChecked[checked_type][first.value];
         }
         this.props.actions.roleMenu(StoreChecked);
     }
@@ -179,11 +191,11 @@ class CheckboxAll extends Component {
         const { checked_list, indeterminate, checkAll } = this.state;
         return (
             <Fragment>
-                <div class="checkbox-wrap">
-                    <div class="all">
+                <div className="checkbox-wrap">
+                    <div className="all">
                         <Checkbox indeterminate={indeterminate} checked={checkAll} onChange={this.onCheckAllChange}>{label}</Checkbox>
                     </div>
-                    <div class="item">
+                    <div className="item">
                         <CheckboxGroup options={child_item} value={checked_list} onChange={this.onChange} /><br/><br/>
                     </div>
                 </div>
@@ -195,18 +207,20 @@ class CheckboxAll extends Component {
 // 校验数据类型
 CheckboxAll.propTypes = {
     data: PropTypes.object,
+    type: PropTypes.string,
     init: PropTypes.array,
     saveAllKey: PropTypes.bool
 }
 // 默认
 CheckboxAll.defaultProps = {
     data: {},
+    type: "",
     init: [],
     saveAllKey: false
 }
 
 const mapStateToProps = (state) => ({
-    menu: state.app.checked_all,
+    checked: state.app.checked_all,
 })
 
 const mapDispatchToProps = (dispatch) => {
