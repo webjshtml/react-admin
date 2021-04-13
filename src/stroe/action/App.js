@@ -1,4 +1,4 @@
-import { setTokenKey, setUsernameKey, logout, router, login, checkedAll } from "../Type";
+import { setTokenKey, setUsernameKey, logout, router, role_button, login, checkedAll } from "../Type";
 // 方法
 import { setToken, setUsername, removeToken, removeUsername } from "@/utils/cookies";
 // API
@@ -35,6 +35,13 @@ export function logoutAction(){
 export function updateRouter(data){
     return {
         type: router,
+        value: data
+    }
+}
+
+export function updateButton(data){
+    return {
+        type: role_button,
         value: data
     }
 }
@@ -92,6 +99,7 @@ export const getUserRoleAction = () => dispatch => {
         const data = response.data.data;
         // 菜单
         const menu = data.menu && data.menu.split(",");
+        const button = data.button ? data.button.split(",") : [];
         // // 存储路由
         let routerArray = [];
         if(!menu) {
@@ -115,6 +123,7 @@ export const getUserRoleAction = () => dispatch => {
             })
         }
         dispatch(updateRouter(routerArray));
+        dispatch(updateButton(button));
     }).catch(error => {
 
     })

@@ -8,3 +8,4 @@ export const logout =  "LOGOUT_REMOVE";
 export const router =  "UPDATE_ROUTER";
 export const login =  "HANDLER_LOGIN";
 export const checkedAll = "CHECKED_ALL";
+export const role_button = "UPDATE_BUTTON";
